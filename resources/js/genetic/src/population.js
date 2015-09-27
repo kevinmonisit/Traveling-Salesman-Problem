@@ -34,7 +34,6 @@ Population.prototype = {
 	},
 
 	createGenomeFromParents: function(indiv, indiv2) {
-		
 		return 0;
 	},
 

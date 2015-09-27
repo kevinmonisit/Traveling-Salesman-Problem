@@ -7,7 +7,7 @@
 
 
 function Individual(genomeLength) {	
-	if(genomeLength && isNaN(genomeLength)) {
+	if(genomeLength && isNaN(genomeLength))
 		throw new Error("genomeLength argument of Individual is not a number! Defaulting genomeLength to 10!");
 
 	this.genome = [];
@@ -45,7 +45,7 @@ Individual.prototype = {
 
 	crossOver: function(individual) {
 
-	}
+	},
 
 	getRandomInt: function(min, max) {
 	    return Math.floor(Math.random() * (max - min + 1)) + min;
