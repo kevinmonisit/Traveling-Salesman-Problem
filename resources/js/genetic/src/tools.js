@@ -16,7 +16,13 @@ var tools = {
 		},
 
 		toggleBetweenParents: function(indiv, indiv2) {
-			return 0;			
+			var newChildGenome = [];
+
+			for(var i = 0; i < indiv.genome.length; i++) {
+
+			}
+
+			return 0;
 		}
 	},
 
@@ -33,8 +39,10 @@ var tools = {
 	*/
 	fitnessTest: function(indiv) {
 		var fitness = 0;
-		for(var i = 0; i < _tempFitness.length; i ++) {
-			indiv.genome[i] == _tempFitness[i];
+
+		for(var i = 0; i < this._tempFitness.length; i ++) {
+			if(indiv.genome[i] == this._tempFitness[i]) 
+				fitness++;
 		}
 
 		return fitness;

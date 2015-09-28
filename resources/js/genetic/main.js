@@ -8,10 +8,17 @@ var tests = {
 	population: new Population(),
 
 	init: function() {
+		
 		this.population.populationMAX = 5;
 		this.population.createNewGeneration();
 		
+		tools._tempGenerateGoal(this.population.genomeConfig.genomeLength);
 		
+		for(var i = 0; i < this.population.individuals.length; i++) {
+			this.population.individuals[i].fitnessScore = tools.fitnessTest(this.population.individuals[i]); 
+		}
+
+		console.log(this.population.getFittestIndividual());
 	}
 
 };

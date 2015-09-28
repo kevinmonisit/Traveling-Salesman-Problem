@@ -4,7 +4,7 @@ function Population(populationMAX) {
 
 	this.individuals = [];	
 	this.generation = 0;
-	
+
 	this.genomeConfig = {
 		genomeLength: 10,
 
@@ -27,12 +27,18 @@ Population.prototype = {
 		for(var i = 0; i < this.populationMAX; i++) {
 			this.individuals.push(new Individual());	
 			this.individuals[i].genomeConfig = this.genomeConfig;
+			/*
+				Temp line of code until I got crossovers and generations finished
+			*/
 			this.individuals[i].generateRandomGenome();
 		}
 
-	}, 
+	},
 
 	getFittestIndividual: function() {
+		if(this.individuals.length <= 0)
+			throw new Error("Cannot get fittest individual when individual array is null! getFittestIndividual()");
+
 		var fittest = this.individuals[0];
 		
 		for(var i = 1; i < this.individuals.length; i++) {
@@ -41,6 +47,13 @@ Population.prototype = {
 		}
 
 		return fittest;
+	},
+
+	/*
+		Returns an array of the fittest individuals from biggest to smallest
+	*/
+	getArrayOfFittestIndividual: function() {
+
 	}
 
 };
