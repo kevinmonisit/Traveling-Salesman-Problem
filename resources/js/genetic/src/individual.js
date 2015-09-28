@@ -27,28 +27,19 @@ function Individual(genomeLength) {
 Individual.prototype = {
 
 	generateRandomGenome: function() {
-		if(this.genomeConfig.binaryGenome == false && (!min || !max))
+		if(this.genomeConfig.binaryGenome === false && (!min || !max))
 			throw new Error("Custom numbers is toggled on but min and max are still null! Check genomeConfig and try again!");
 
 		var config = this.genomeConfig;
 		for(var i = 0; i < config.genomeLength; i++) {
 			
 			if(config.binaryGenome) 
-				this.genome.push(this.getRandomInt(0, 1));
+				this.genome.push(tools.getRandomInt(0, 1));
 			else if(!config.binaryGenome)
-				this.genome.push(this.getRandomInt(config.min, config.max));
+				this.genome.push(tools.getRandomInt(config.min, config.max));
 			else
 				throw new Error("Genome Config of individual is not a boolean!");
 
 		}
-	},
-
-	crossOver: function(individual) {
-
-	},
-
-	getRandomInt: function(min, max) {
-	    return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
-
 };

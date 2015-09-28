@@ -1,5 +1,3 @@
-//Gene 
-
 function Population(populationMAX) {
 	
 	this.populationMAX = populationMAX;
@@ -24,18 +22,15 @@ Population.prototype = {
 		if(this.populationMAX <= 0 || !this.populationMAX)
 			throw new Error("populationMAX is undefined!");
 
-		generation++;
+		this.generation++;
 		
 		for(var i = 0; i < this.populationMAX; i++) {
-			this.individuals.push(new Indidividual());	
+			this.individuals.push(new Individual());	
 			this.individuals[i].genomeConfig = this.genomeConfig;
+			this.individuals[i].generateRandomGenome();
 		}
 
-	},
-
-	createGenomeFromParents: function(indiv, indiv2) {
-		return 0;
-	},
+	}, 
 
 	getFittestIndividual: function() {
 		var fittest = this.individuals[0];

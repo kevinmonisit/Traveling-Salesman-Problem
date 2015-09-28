@@ -9,13 +9,11 @@ var tests = {
 
 	init: function() {
 		this.population.populationMAX = 5;
+		this.population.createNewGeneration();
+		
 		
 	}
 
 };
-/*
 
-	var indiv = new Individual();
-	
-
-*/
+tests.init();
