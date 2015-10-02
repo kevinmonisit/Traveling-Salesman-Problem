@@ -9,7 +9,7 @@ var tests = {
 
 	init: function() {
 		
-		this.population.populationMAX = 5;
+		this.population.populationMAX = 3;
 		this.population.createNewGeneration();
 		
 		tools._tempGenerateGoal(this.population.genomeConfig.genomeLength);
@@ -18,7 +18,6 @@ var tests = {
 			this.population.individuals[i].fitnessScore = tools.fitnessTest(this.population.individuals[i]); 
 		}
 
-		console.log(this.population.getFittestIndividual());
 	}
 
 };

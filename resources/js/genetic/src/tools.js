@@ -3,7 +3,7 @@ var tools = {
 
 	_tempFitness: [],
 
-	crossOver: {
+	crossover: {
 		halfAndHalf: function(indiv, indiv2) {
 			return 0;
 		},
@@ -19,10 +19,11 @@ var tools = {
 			var newChildGenome = [];
 
 			for(var i = 0; i < indiv.genome.length; i++) {
-
+				//randomly toggle between both parent's genome and push it into the child 
+				newChildGenome.push(tools.getRandomInt(0,1) == 0 ? indiv.genome[i] : indiv2.genome[i])
 			}
 
-			return 0;
+			return newChildGenome;
 		}
 	},
 

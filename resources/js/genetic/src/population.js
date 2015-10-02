@@ -4,6 +4,7 @@ function Population(populationMAX) {
 
 	this.individuals = [];	
 	this.generation = 0;
+	this.sorted = false;
 
 	this.genomeConfig = {
 		genomeLength: 10,
@@ -16,23 +17,50 @@ function Population(populationMAX) {
 
 }
 
+/*
+	If fitness level does not approve, save the two fittest parents and create a new generation!
+*/
+
 Population.prototype = {
 	
+	/*
+		Rewrite createNewGeneration function! It looks so messy!
+	*/
 	createNewGeneration: function() {
-		if(this.populationMAX <= 0 || !this.populationMAX)
+		if(this.populationMAX <= 0 || !this.populationMAX) 
 			throw new Error("populationMAX is undefined!");
 
+		//if this is not the initial generation, sort array
+		if(this.generation > 0) {
+			this.sortArrayOfFittestIndividual();
+		}
+			
 		this.generation++;
-		
+		console.log("Generation: " + this.generation);
+
+		var newGenerationArray = [];
 		for(var i = 0; i < this.populationMAX; i++) {
-			this.individuals.push(new Individual());	
-			this.individuals[i].genomeConfig = this.genomeConfig;
-			/*
-				Temp line of code until I got crossovers and generations finished
-			*/
-			this.individuals[i].generateRandomGenome();
+			newGenerationArray.push(new Individual());	
+			newGenerationArray[i].genomeConfig = this.genomeConfig;
+			
+			//crossover two of fittest individuals into individual's genome	
+			if(this.generation > 1)
+				newGenerationArray[i].genome = tools.crossover.toggleBetweenParents(this.individuals[0], this.individuals[1]);
+			else 
+				//if its the first generation, generate random genome
+				newGenerationArray[i].generateRandomGenome();
 		}
 
+		//reset current individuals array to the new generation
+		this.individuals = newGenerationArray;
+
+		for(var i = 0; i < this.individuals.length; i++) {
+			this.individuals[i].fitnessScore = tools.fitnessTest(this.individuals[i]); 
+		}
+
+		console.log(this.individuals);
+
+		this.sorted = false;
 	},
 
 	getFittestIndividual: function() {
@@ -52,7 +80,26 @@ Population.prototype = {
 	/*
 		Returns an array of the fittest individuals from biggest to smallest
 	*/
-	getArrayOfFittestIndividual: function() {
+	sortArrayOfFittestIndividual: function() {
+		this.sorted = true;
+		if(this.individuals.length == 0)
+			throw new Error("Cannot sort array when individuals array is empty!");
+		
+		//bubble sort
+		var swapped = true;
+		while(swapped) {
+			swapped = false;
+		
+				for(var i = 0; i < this.individuals.length - 1; i ++) {
+					if(this.individuals[i].fitnessScore > this.individuals[i+1].fitnessScore) {
+						var temp = this.individuals[i];
+						//swap elements
+						this.individuals[i] = this.individuals[i+1];
+						this.individuals[i+1] = temp;
+						swapped = true;
+					}
+			}
+		}
 
 	}
 

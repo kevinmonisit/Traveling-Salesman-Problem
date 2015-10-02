@@ -38,7 +38,7 @@ Individual.prototype = {
 			else if(!config.binaryGenome)
 				this.genome.push(tools.getRandomInt(config.min, config.max));
 			else
-				throw new Error("Genome Config of individual is not a boolean!");
+				throw new Error("Genome Config of individual is not a boolean! ew. i wonder how that happened");
 
 		}
 	}
