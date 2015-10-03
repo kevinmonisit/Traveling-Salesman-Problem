@@ -25,6 +25,13 @@ var tools = {
 
 			for(var i = 0; i < mutateRate; i++) {
 				var randomIndex = tools.getRandomInt(0, indiv.genome.length);
+				
+				/*
+					Bug here:!!!! 
+
+					When genomeConfig.binaryGenome is toggled off, this messes everything up!
+				*/
+
 				//toggle a gene
 				newChildGenome[randomIndex] = newChildGenome[randomIndex] == 0 ? 1 : 0;
 			}
