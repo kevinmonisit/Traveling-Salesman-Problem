@@ -15,12 +15,18 @@ var tools = {
 			return 0;
 		},
 
-		toggleBetweenParents: function(indiv, indiv2) {
+		toggleBetweenParents: function(indiv, indiv2, mutateRate) {
 			var newChildGenome = [];
 
 			for(var i = 0; i < indiv.genome.length; i++) {
 				//randomly toggle between both parent's genome and push it into the child 
 				newChildGenome.push(tools.getRandomInt(0,1) == 0 ? indiv.genome[i] : indiv2.genome[i])
+			}
+
+			for(var i = 0; i < mutateRate; i++) {
+				var randomIndex = tools.getRandomInt(0, indiv.genome.length);
+				//toggle a gene
+				newChildGenome[randomIndex] = newChildGenome[randomIndex] == 0 ? 1 : 0;
 			}
 
 			return newChildGenome;

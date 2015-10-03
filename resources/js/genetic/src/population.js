@@ -48,7 +48,7 @@ Population.prototype = {
 			
 			//crossover two of fittest individuals into individual's genome	
 			if(this.generation > 1)
-				newGenerationArray[i].genome = tools.crossover.toggleBetweenParents(this.individuals[0], this.individuals[1]);
+				newGenerationArray[i].genome = tools.crossover.toggleBetweenParents(this.individuals[0], this.individuals[1], this.mutateRate);
 			else 
 				//if its the first generation, generate random genome
 				newGenerationArray[i].generateRandomGenome();
@@ -59,8 +59,11 @@ Population.prototype = {
 
 		for(var i = 0; i < this.individuals.length; i++) {
 			this.individuals[i].fitnessScore = tools.fitnessTest(this.individuals[i]); 
+			if(this.individuals[i].fitnessScore == this.genomeConfig.genomeLength)
+				console.log("WE GOTTA WINNNERRENNRNERN! : " + this.individuals[i].genome);
 		}
 
+		this.sortArrayOfFittestIndividual();
 		console.log(this.individuals);
 
 		this.sorted = false;
@@ -81,13 +84,13 @@ Population.prototype = {
 	},
 
 	/*
-		Returns an array of the fittest individuals from biggest to smallest
+		Returns an array of the fittest individuals from biggest smallest
 	*/
 	sortArrayOfFittestIndividual: function() {
 		this.sorted = true;
 		if(this.individuals.length == 0)
 			throw new Error("Cannot sort array when individuals array is empty!");
-		console.log('ajdhajkfhakj');
+
 		//bubble sort
 		var swapped = true;
 		while(swapped) {
