@@ -27,9 +27,10 @@ function Individual(genomeLength) {
 Individual.prototype = {
 
 	generateRandomGenome: function() {
-		if(this.genomeConfig.binaryGenome === false && (!min || !max))
+		if(this.genomeConfig.binaryGenome === false && (this.genomeConfig.min == null || !this.genomeConfig.max == null)) {
 			throw new Error("Custom numbers is toggled on but min and max are still null! Check genomeConfig and try again!");
-
+		}
+			
 		var config = this.genomeConfig;
 		for(var i = 0; i < config.genomeLength; i++) {
 			

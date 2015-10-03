@@ -1,5 +1,5 @@
 function Population(populationMAX, mutationRate) {
-	
+	a
 	this.populationMAX = populationMAX;
 	this.mutateRate = 1;
 
@@ -9,10 +9,10 @@ function Population(populationMAX, mutationRate) {
 	this.genomeConfig = {
 		genomeLength: 10,
 
-		binaryGenome: true,
+		binaryGenome: false,
 		//if binartGenome is true, ignore below variables
-		min: null,
-		max: null
+		min: 0,
+		max: 20
 	};
 
 }
