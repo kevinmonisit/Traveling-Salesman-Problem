@@ -1,6 +1,7 @@
-function Population(populationMAX) {
+function Population(populationMAX, mutationRate) {
 	
 	this.populationMAX = populationMAX;
+	this.mutateRate = 1;
 
 	this.individuals = [];	
 	this.generation = 0;
@@ -25,6 +26,8 @@ Population.prototype = {
 	
 	/*
 		Rewrite createNewGeneration function! It looks so messy!
+
+		Fix sorted boolean, its disgusting
 	*/
 	createNewGeneration: function() {
 		if(this.populationMAX <= 0 || !this.populationMAX) 
@@ -84,14 +87,14 @@ Population.prototype = {
 		this.sorted = true;
 		if(this.individuals.length == 0)
 			throw new Error("Cannot sort array when individuals array is empty!");
-		
+		console.log('ajdhajkfhakj');
 		//bubble sort
 		var swapped = true;
 		while(swapped) {
 			swapped = false;
 		
 				for(var i = 0; i < this.individuals.length - 1; i ++) {
-					if(this.individuals[i].fitnessScore > this.individuals[i+1].fitnessScore) {
+					if(this.individuals[i].fitnessScore < this.individuals[i+1].fitnessScore) {
 						var temp = this.individuals[i];
 						//swap elements
 						this.individuals[i] = this.individuals[i+1];

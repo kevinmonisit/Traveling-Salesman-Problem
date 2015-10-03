@@ -4,12 +4,12 @@
 
 var tests = {
 	
-	populationMAX: 5,
+	populationMAX: 10,
 	population: new Population(),
 
 	init: function() {
 		
-		this.population.populationMAX = 3;
+		this.population.populationMAX = this.populationMAX;
 		this.population.createNewGeneration();
 		
 		tools._tempGenerateGoal(this.population.genomeConfig.genomeLength);
