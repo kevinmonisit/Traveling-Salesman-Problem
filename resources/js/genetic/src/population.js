@@ -5,7 +5,6 @@ function Population(populationMAX, mutationRate) {
 
 	this.individuals = [];	
 	this.generation = 0;
-	this.sorted = false;
 
 	this.genomeConfig = {
 		genomeLength: 10,
@@ -32,11 +31,6 @@ Population.prototype = {
 	createNewGeneration: function() {
 		if(this.populationMAX <= 0 || !this.populationMAX) 
 			throw new Error("populationMAX is undefined!");
-
-		//if this is not the initial generation, sort array
-		if(this.generation > 0) {
-			this.sortArrayOfFittestIndividual();
-		}
 			
 		this.generation++;
 		console.log("Generation: " + this.generation);
@@ -57,16 +51,16 @@ Population.prototype = {
 		//reset current individuals array to the new generation
 		this.individuals = newGenerationArray;
 
+		//evaluate each individual and set their fitnessScore
 		for(var i = 0; i < this.individuals.length; i++) {
 			this.individuals[i].fitnessScore = tools.fitnessTest(this.individuals[i]); 
+			
+			//check if we got a weiner
 			if(this.individuals[i].fitnessScore == this.genomeConfig.genomeLength)
 				console.log("WE GOTTA WINNNERRENNRNERN! : " + this.individuals[i].genome);
 		}
 
 		this.sortArrayOfFittestIndividual();
-		console.log(this.individuals);
-
-		this.sorted = false;
 	},
 
 	getFittestIndividual: function() {
@@ -87,7 +81,6 @@ Population.prototype = {
 		Returns an array of the fittest individuals from biggest smallest
 	*/
 	sortArrayOfFittestIndividual: function() {
-		this.sorted = true;
 		if(this.individuals.length == 0)
 			throw new Error("Cannot sort array when individuals array is empty!");
 

@@ -1,7 +1,7 @@
 /*
 
 	TODO:
-		Make Genome more flexible and more organized
+		Make genome more flexible and more organized
 
 */
 
