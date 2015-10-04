@@ -1,7 +1,7 @@
 
 var tools = {
 
-	_tempFitness: [],
+	_tempFitness: [12,6,3,12,12,8,1,1,9,10],
 
 	crossover: {
 		halfAndHalf: function(indiv, indiv2) {
@@ -24,29 +24,55 @@ var tools = {
 			}
 
 			for(var i = 0; i < mutateRate; i++) {
-				var randomIndex = tools.getRandomInt(0, indiv.genome.length);
-				
-				/*
-					Bug here:!!!! 
+				var randomIndex = tools.getRandomInt(0, indiv.genome.length - 1);
 
-					When genomeConfig.binaryGenome is toggled off, this messes everything up!
-				*/
-
-				//toggle a gene
-				newChildGenome[randomIndex] = newChildGenome[randomIndex] == 0 ? 1 : 0;
+				//mutate gene
+				newChildGenome[randomIndex] = tools.getRandomInt(indiv.genomeConfig.min, indiv.genomeConfig.max);
 			}
 
 			return newChildGenome;
 		}
 	},
 
-	/*
-		Temporary function
-	*/
-	_tempGenerateGoal: function(genomeLength) {
-		for(var i = 0; i < genomeLength; i++)
-			this._tempFitness.push(0);
+	selection: {
+		/*
+
+			Fi = fitness of individual
+			N = population count
+
+		 	pi = fi / Σ j(fj) for j = 1 … N
+		*/
+		rouletteWheel: function(individuals, crossoverID) {
+
+			var newGeneration = [];
+			var populationCount = individuals.length;
+
+			var sumOfAllFitnesses = 0;
+			for(var i = 0; i < individuals.length; i++)
+				sumOfAllFitnesses = individuals.fitnessScore;
+
+			for(var i = 0; i < individuals.length; i++) {
+				individuals[i].probability = individuals[i].probability / sumOfAllFitnesses;
+			}
+
+			for(var i = 0; i < populationCount; i++) {
+				newGeneration.push(new Individual());
+				/*
+					TODO:
+
+						Add crossoverIDs
+						Add selectionIDs
+				* */
+				newGeneration[i].genome = crossoverID == 1 ? tools.toggleBetweenParents() : null;
+			}
+
+		},
+
+		tournament: function(individuals) {
+
+		}
 	},
+
 
 	/*
 		Temporary function

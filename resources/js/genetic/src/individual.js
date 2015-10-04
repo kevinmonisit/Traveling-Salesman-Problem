@@ -13,6 +13,8 @@ function Individual(genomeLength) {
 	this.genome = [];
 	this.fitnessScore = 0;
 
+	this.probability = 0;
+
 	this.genomeConfig = {
 		genomeLength: genomeLength,
 
