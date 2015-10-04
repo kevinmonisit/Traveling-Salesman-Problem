@@ -7,7 +7,7 @@ function Population(populationMAX, mutationRate) {
 	this.generation = 0;
 
 	this.weiner = false;
-	this.selectionProcess = this.selection.ROULETTE;
+	this.selectionProcess = 0; //set to this.selection.ROULETTE
 	this.crossover =
 
 	this.genomeConfig = {

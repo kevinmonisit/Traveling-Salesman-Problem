@@ -26,7 +26,7 @@ var tools = {
 			for(var i = 0; i < mutateRate; i++) {
 				var randomIndex = tools.getRandomInt(0, indiv.genome.length - 1);
 
-				//toggle a gene
+				//mutate gene
 				newChildGenome[randomIndex] = tools.getRandomInt(indiv.genomeConfig.min, indiv.genomeConfig.max);
 			}
 
