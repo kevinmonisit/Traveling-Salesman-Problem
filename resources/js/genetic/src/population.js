@@ -7,6 +7,8 @@ function Population(populationMAX, mutationRate) {
 	this.generation = 0;
 
 	this.weiner = false;
+	this.selectionProcess = this.selection.ROULETTE;
+	this.crossover =
 
 	this.genomeConfig = {
 		genomeLength: 10,
@@ -24,12 +26,7 @@ function Population(populationMAX, mutationRate) {
 */
 
 Population.prototype = {
-	
-	/*
-		Rewrite createNewGeneration function! It looks so messy!
 
-		Fix sorted boolean, its disgusting
-	*/
 	createNewGeneration: function() {
 		if(this.populationMAX <= 0 || !this.populationMAX) 
 			throw new Error("populationMAX is undefined!");
@@ -107,4 +104,17 @@ Population.prototype = {
 
 	}
 
+};
+
+Population.selection = {
+	TOURNAMENT: 0,
+	ROULETTE: 1
+};
+
+Population.crossover = {
+	TWO_RANDOM_POINTS: 0,
+	TOGGLE_BETWEEN_PARENTS: 1,
+
+	/* Not really a good choice*/
+	HALF_AND_HALF: 2
 };
