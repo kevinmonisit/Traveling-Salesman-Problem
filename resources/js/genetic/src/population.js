@@ -1,16 +1,18 @@
 function Population(populationMAX, mutationRate) {
-	a
+
 	this.populationMAX = populationMAX;
-	this.mutateRate = 1;
+	this.mutateRate = mutationRate;
 
 	this.individuals = [];	
 	this.generation = 0;
+
+	this.weiner = false;
 
 	this.genomeConfig = {
 		genomeLength: 10,
 
 		binaryGenome: false,
-		//if binartGenome is true, ignore below variables
+		//if binaryGenome is true, ignore below variables
 		min: 0,
 		max: 20
 	};
@@ -56,11 +58,14 @@ Population.prototype = {
 			this.individuals[i].fitnessScore = tools.fitnessTest(this.individuals[i]); 
 			
 			//check if we got a weiner
-			if(this.individuals[i].fitnessScore == this.genomeConfig.genomeLength)
+			if(this.individuals[i].fitnessScore == this.genomeConfig.genomeLength) {
+				this.weiner = true;
 				console.log("WE GOTTA WINNNERRENNRNERN! : " + this.individuals[i].genome);
+			}
 		}
 
 		this.sortArrayOfFittestIndividual();
+
 	},
 
 	getFittestIndividual: function() {

@@ -1,7 +1,7 @@
 
 var tools = {
 
-	_tempFitness: [],
+	_tempFitness: [12,6,3,12,12,8,1,1,9,10],
 
 	crossover: {
 		halfAndHalf: function(indiv, indiv2) {
@@ -24,16 +24,10 @@ var tools = {
 			}
 
 			for(var i = 0; i < mutateRate; i++) {
-				var randomIndex = tools.getRandomInt(0, indiv.genome.length);
-				
-				/*
-					Bug here:!!!! 
-
-					When genomeConfig.binaryGenome is toggled off, this messes everything up!
-				*/
+				var randomIndex = tools.getRandomInt(0, indiv.genome.length - 1);
 
 				//toggle a gene
-				newChildGenome[randomIndex] = newChildGenome[randomIndex] == 0 ? 1 : 0;
+				newChildGenome[randomIndex] = tools.getRandomInt(indiv.genomeConfig.min, indiv.genomeConfig.max);
 			}
 
 			return newChildGenome;
