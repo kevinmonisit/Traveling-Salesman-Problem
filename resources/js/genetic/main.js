@@ -6,7 +6,11 @@
 * TODO:
 *
 * Add crossoverIds and selectionIds for different methods
+*
 * Refactor
+*
+* Finish selection proccesses
+*
 * Fix bugs
 * Test
 *
@@ -16,7 +20,7 @@
 
 var tests = {
 	
-	populationMAX: 10,
+	populationMAX: 2,
 	population: new Population(null, 1),
 
 	init: function() {
@@ -31,12 +35,14 @@ var tests = {
 			this.population.individuals[i].fitnessScore = tools.fitnessTest(this.population.individuals[i]); 
 		}
 
-		while(!this.population.weiner) {
-			this.population.createNewGeneration();
-		}
+		this.population.createNewGeneration();
+
+		//while(!this.population.weiner) {
+		//	this.population.createNewGeneration();
+		//}
 
 	}
 
 };
 
-tests.init();
+ tests.init();
