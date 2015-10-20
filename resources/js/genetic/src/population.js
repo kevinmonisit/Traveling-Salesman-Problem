@@ -7,8 +7,8 @@ function Population(populationMAX, mutationRate) {
 	this.generation = 0;
 
 	this.weiner = false;
-	this.selectionProcess = 0; //set to this.selection.ROULETTE
-	this.crossover =
+	this.selectionProcess = 1; //set to this.selection.ROULETTE
+	this.crossoverID = 1;
 
 	this.genomeConfig = {
 		genomeLength: 10,
@@ -27,43 +27,67 @@ function Population(populationMAX, mutationRate) {
 
 Population.prototype = {
 
-	createNewGeneration: function() {
-		if(this.populationMAX <= 0 || !this.populationMAX) 
-			throw new Error("populationMAX is undefined!");
-			
-		this.generation++;
-		console.log("Generation: " + this.generation);
+	initGeneration: function() {
+		if(this.populationMAX <= 0 || !this.populationMAX)
+			throw new Error("populationMax is undefined");
 
-		var newGenerationArray = [];
+		this.generation++;
+
 		for(var i = 0; i < this.populationMAX; i++) {
-			newGenerationArray.push(new Individual());	
-			newGenerationArray[i].genomeConfig = this.genomeConfig;
-			
-			//crossover two of fittest individuals into individual's genome	
-			if(this.generation > 1)
-				newGenerationArray[i].genome = tools.crossover.toggleBetweenParents(this.individuals[0], this.individuals[1], this.mutateRate);
-			else 
-				//if its the first generation, generate random genome
-				newGenerationArray[i].generateRandomGenome();
+			this.individuals.push(new Individual());
+			this.individuals[i].genomeConfig = this.genomeConfig;
+
+			this.individuals[i].generateRandomGenome();
 		}
 
-		//reset current individuals array to the new generation
-		this.individuals = newGenerationArray;
-
-		//evaluate each individual and set their fitnessScore
 		for(var i = 0; i < this.individuals.length; i++) {
-			this.individuals[i].fitnessScore = tools.fitnessTest(this.individuals[i]); 
-			
-			//check if we got a weiner
+			this.individuals[i].fitnessScore = tools.fitnessTest(this.individuals[i]);
+
 			if(this.individuals[i].fitnessScore == this.genomeConfig.genomeLength) {
 				this.weiner = true;
-				console.log("WE GOTTA WINNNERRENNRNERN! : " + this.individuals[i].genome);
+				console.log("WE GOTTA WINENENERNERNRENERN! :" + " " + this.individuals[i].genome);
 			}
 		}
 
-		this.sortArrayOfFittestIndividual();
-
+        this.sortArrayOfFittestIndividuals();
 	},
+
+    /*
+        TODO:
+			finish up new generation functions
+   	*/
+
+	/*
+		Refactor createNewGeneration function
+	*/
+	createNewGeneration: function() {
+		if(this.populationMAX <= 0 || !this.populationMAX)
+			throw new Error("populationMax is undefined");
+
+        var newGeneration = [];
+
+        if(this.generation < 1)
+            this.initGeneration();
+
+		this.generation++;
+
+		if(this.selectionProcess == 1) { //roulette wheel selection
+            newGeneration = tools.selection.rouletteWheel(this.individuals, this.genomeConfig, this.crossoverID); //returns a newGeneration using roulette
+		} else
+            throw new Error("Selection ID is invalid!");
+
+        for(var i = 0; i < newGeneration.length; i++) {
+            newGeneration[i].fitnessScore = tools.fitnessTest(newGeneration[i]);
+        }
+
+        if(tools.weinerChecker(newGeneration, this.genomeConfig.genomeLength)) {
+            this.weiner = true;
+            console.log("WE GOT A WEINEINERNENERNRENR!");
+        }
+
+        this.sortArrayOfFittestIndividuals();
+ 	},
+
 
 	getFittestIndividual: function() {
 		if(this.individuals.length <= 0)
@@ -82,7 +106,7 @@ Population.prototype = {
 	/*
 		Returns an array of the fittest individuals from biggest smallest
 	*/
-	sortArrayOfFittestIndividual: function() {
+	sortArrayOfFittestIndividuals: function() {
 		if(this.individuals.length == 0)
 			throw new Error("Cannot sort array when individuals array is empty!");
 
