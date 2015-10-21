@@ -109,13 +109,14 @@ var tools = {
 
 		 pi = fi / Σ j(fj) for j = 1 … N
 		 */
-		roulette: function(individuals, genomeConfig, crossoverID) {
+		roulette: function(individuals, genomeConfig, crossoverID, populationMAX, matingPoolLength) {
 			var newGeneration = [];
 			var sumOfAllFitnesses = 0;
 			var par1, par2;
+			var matingPool = [];
 			var bias = 0.1;
 
-			if(!individuals || !genomeConfig || !crossoverID) throw Error("Invalid parameters!");
+			if(!individuals || !genomeConfig || !crossoverID || !populationMAX || !matingPoolLength) throw Error("Invalid parameters!");
 
 			for(var i = 0; i < individuals.length; i++) {
 				sumOfAllFitnesses += individuals[i].fitnessScore;
@@ -128,16 +129,38 @@ var tools = {
 			}
 
 			/*
-			 http://stackoverflow.com/a/10949834
-			* */
+				Based on:
+					http://stackoverflow.com/a/10949834
+			 		http://www.geatbx.com/docu/algindex-02.html
+			*/
 
-			for(var parentCount = 0; parentCount < 2; parentCount++) {
+			for(var parentCount = 0; parentCount < matingPoolLength; parentCount++) {
 				var r = Math.random();
 				var runningScore = 0;
 				for(var i = 0; i < individuals.length; i++) {
-					if(r >= runningScore && r <= runningScore+individuals.probability)
-						return "adakdla";
+					if(r >= runningScore && r <= runningScore+individuals[i].probability) {
+						if(parentCount == 1) {
+							par1 = individuals[i];
+							break;
+						} else {
+							par2 = individuals[i];
+							break;
+						}
+					}
 					runningScore += individuals[i].probability;
+				}
+			}
+
+			for(var i = 0; i < populationMAX; i++) {
+				newGeneration.push(new Individual());
+
+				switch (crossoverID) {
+					case 1: //toggle between parent genomes
+						newGeneration[i].genome = tools.crossover.toggleBetweenParents();
+						break;
+					default:
+						console.log("CrossoverID error!");
+						break;
 				}
 			}
 
