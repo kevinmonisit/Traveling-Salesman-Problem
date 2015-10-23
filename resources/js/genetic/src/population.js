@@ -10,6 +10,8 @@ function Population(populationMAX, mutationRate) {
 	this.selectionProcess = 1; //set to this.selection.ROULETTE
 	this.crossoverID = 1;
 
+    this.matingPoolLength = 3;
+
 	this.genomeConfig = {
 		genomeLength: 10,
 
@@ -31,7 +33,11 @@ Population.prototype = {
 		if(this.populationMAX <= 0 || !this.populationMAX)
 			throw new Error("populationMax is undefined");
 
+
 		this.generation++;
+
+        console.log(this.generation);
+
 
 		for(var i = 0; i < this.populationMAX; i++) {
 			this.individuals.push(new Individual());
@@ -49,12 +55,16 @@ Population.prototype = {
 			}
 		}
 
-        this.sortArrayOfFittestIndividuals();
 	},
 
     /*
         TODO:
 			finish up new generation functions
+
+			merge initGeneration and createNewGeneration functions together
+
+			in case fitness doesnt increase in population, always include the fittest individual
+			from last geneartion into new generation
    	*/
 
 	/*
@@ -71,8 +81,16 @@ Population.prototype = {
 
 		this.generation++;
 
+        console.log(this.generation);
+
 		if(this.selectionProcess == 1) { //roulette wheel selection
-            newGeneration = tools.selection.rouletteWheel(this.individuals, this.genomeConfig, this.crossoverID); //returns a newGeneration using roulette
+            newGeneration = tools.selection.roulette(
+                this.individuals,
+                this.genomeConfig,
+                this.crossoverID,
+                this.populationMAX,
+                this.matingPoolLength
+            ); //returns a newGeneration using roulette TODO: last parameter is sketchy
 		} else
             throw new Error("Selection ID is invalid!");
 
@@ -85,7 +103,8 @@ Population.prototype = {
             console.log("WE GOT A WEINEINERNENERNRENR!");
         }
 
-        this.sortArrayOfFittestIndividuals();
+        this.individuals = newGeneration;
+
  	},
 
 

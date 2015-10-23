@@ -37,73 +37,6 @@ var tools = {
 	selection: {
 		/*
 
-			Fi = fitness of individual
-			N = population count
-
-		 	pi = fi / Σ j(fj) for j = 1 … N
-		*/
-		rouletteWheel: function(individuals, genomeConfig, crossoverID, populationMAX) {
-
-			var newGeneration = [];
-			var populationCount = populationMAX;
-
-			var sumOfAllFitnesses = 0;
-			for(var i = 0; i < individuals.length; i++) {
-				sumOfAllFitnesses += individuals[i].fitnessScore;
-			}
-
-			for(var i = 0; i < individuals.length; i++) {
-				individuals[i].probability = individuals[i].fitnessScore / sumOfAllFitnesses;
-
-				if(isNaN(individuals[i].probability)) individuals[i].probability = 0; //divided by 0! oh noes!
-			}
-
-			for(var i = 0; i < populationCount; i++) {
-				var _genome = [];
-				var par1, par2;
-				newGeneration.push(new Individual());
-				newGeneration[i].genomeConfig = genomeConfig;
-
-				/*
-					TODO:
-
-						Finish probability and find two parents
-				*/
-
-				//find two pairs of parent using probability
-				for(var parentCount = 0; parentCount < 1; parentCount++) {
-					var r = Math.random();
-					var _noFitnessCount = 0; //if variable equals populationMAX, all individuals have 0 fitness
-
-					for(var j = 1; j < individuals.length; j++) {
-
-						if (tools.fitnessTest(individuals[j]) == 0) _noFitnessCount++;
-
-						//check if current individual is closer to random number than the last
-						if (Math.abs(r - individuals[j].probability) < Math.abs(r - individuals[i - 1].probability)) {
-							if (parentCount == 0) {
-								par1 = individuals[j];
-								break;
-							} else {
-								par2 = individuals[j];
-								break;
-							}
-						}
-					}
-				}
-
-				if(crossoverID == 1) {
-					//console.log(par1 + " " + par2);
-					//_genome = tools.crossover.toggleBetweenParents(par1, par2);
-				} else throw new Error("CrossoverID is invalid!");
-				newGeneration[i].genome = _genome;
-			}
-
-			return newGeneration;
-		},
-
-		/*
-
 		 Fi = fitness of individual
 		 N = population count
 
@@ -112,7 +45,7 @@ var tools = {
 		roulette: function(individuals, genomeConfig, crossoverID, populationMAX, matingPoolLength) {
 			var newGeneration = [];
 			var sumOfAllFitnesses = 0;
-			var par1, par2;
+
 			var matingPool = [];
 			var bias = 0.1;
 
@@ -129,34 +62,51 @@ var tools = {
 			}
 
 			/*
-				Based on:
+				Function based on:
 					http://stackoverflow.com/a/10949834
 			 		http://www.geatbx.com/docu/algindex-02.html
 			*/
 
-			for(var parentCount = 0; parentCount < matingPoolLength; parentCount++) {
+			for(var j = 0; j < matingPoolLength; j++) {
 				var r = Math.random();
 				var runningScore = 0;
+
 				for(var i = 0; i < individuals.length; i++) {
 					if(r >= runningScore && r <= runningScore+individuals[i].probability) {
-						if(parentCount == 1) {
-							par1 = individuals[i];
-							break;
-						} else {
-							par2 = individuals[i];
-							break;
-						}
+						matingPool.push(individuals[i]);
 					}
 					runningScore += individuals[i].probability;
 				}
 			}
+
+			/*
+
+			TODO:
+				Sometimes, there is an error that indiv.genome is null on line 21
+
+				This is due to the gene pool being empty and this for loop calling upon it
+
+				The reason why its empty is that none of the individuals have a fitness, therefore
+				it does not get into roulette algorithm and cries in the corner because he is sad
+			* */
 
 			for(var i = 0; i < populationMAX; i++) {
 				newGeneration.push(new Individual());
 
 				switch (crossoverID) {
 					case 1: //toggle between parent genomes
-						newGeneration[i].genome = tools.crossover.toggleBetweenParents();
+						//get random pair of parents from mating pool
+						console.log();
+						var _rIndex = tools.getRandomInt(0, matingPool.length - 1);
+						var _rIndex2 = tools.getRandomInt(0, matingPool.length - 1);
+
+						console.log(_rIndex + " " + _rIndex2);
+						console.log(matingPool);
+						newGeneration[i].genome = tools.crossover.toggleBetweenParents(
+							matingPool[_rIndex],
+							matingPool[_rIndex2],
+							2 //mutate rate
+						);
 						break;
 					default:
 						console.log("CrossoverID error!");
