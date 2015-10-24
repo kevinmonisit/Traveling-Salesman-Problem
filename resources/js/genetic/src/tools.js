@@ -42,7 +42,7 @@ var tools = {
 
 		 pi = fi / Σ j(fj) for j = 1 … N
 		 */
-		roulette: function(individuals, genomeConfig, crossoverID, populationMAX, matingPoolLength) {
+		roulette: function(individuals, genomeConfig, crossoverID, populationMAX, matingPoolLength, mutateRate) {
 			var newGeneration = [];
 			var sumOfAllFitnesses = 0;
 
@@ -79,6 +79,14 @@ var tools = {
 				}
 			}
 
+            //TODO
+            //if fitness does not approve, include last parents into current generation
+
+            //no individual was fit enough!!
+            if(matingPool.length === 0) {
+                matingPool = individuals; //resort back
+            }
+
 			/*
 
 			TODO:
@@ -95,23 +103,19 @@ var tools = {
 
 				switch (crossoverID) {
 					case 1: //toggle between parent genomes
-						//get random pair of parents from mating pool
-						console.log();
-						var _rIndex = tools.getRandomInt(0, matingPool.length - 1);
-						var _rIndex2 = tools.getRandomInt(0, matingPool.length - 1);
 
-						console.log(_rIndex + " " + _rIndex2);
-						console.log(matingPool);
+						//get random pair of parents from mating pool
 						newGeneration[i].genome = tools.crossover.toggleBetweenParents(
-							matingPool[_rIndex],
-							matingPool[_rIndex2],
-							2 //mutate rate
+							matingPool[tools.getRandomInt(0, matingPool.length - 1)],
+							matingPool[tools.getRandomInt(0, matingPool.length - 1)],
+							mutateRate //mutate rate
 						);
 						break;
 					default:
 						console.log("CrossoverID error!");
 						break;
 				}
+
 			}
 
 			return newGeneration;

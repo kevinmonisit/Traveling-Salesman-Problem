@@ -75,12 +75,16 @@ Population.prototype = {
 			throw new Error("populationMax is undefined");
 
         var newGeneration = [];
-
+        
         if(this.generation < 1)
             this.initGeneration();
 
-		this.generation++;
+        var fittest = this.getFittestIndividual(this.individuals);
 
+        //check if fitness improved since last generation
+        var generationIsBetterThanLast = false;
+
+		this.generation++;
         console.log(this.generation);
 
 		if(this.selectionProcess == 1) { //roulette wheel selection
@@ -90,22 +94,41 @@ Population.prototype = {
                 this.crossoverID,
                 this.populationMAX,
                 this.matingPoolLength
-            ); //returns a newGeneration using roulette TODO: last parameter is sketchy
+            ); //returns a newGeneration array using roulette TODO: last parameter is sketchy
 		} else
             throw new Error("Selection ID is invalid!");
 
+        /*
+            Assign fitness to each individual in newGeneration array.
+
+            Check if new generation has improved in fitness
+         */
         for(var i = 0; i < newGeneration.length; i++) {
             newGeneration[i].fitnessScore = tools.fitnessTest(newGeneration[i]);
+
+            if(newGeneration[i].fitnessScore >= fittest.fitnessScore)
+                generationIsBetterThanLast = true;
         }
 
         if(tools.weinerChecker(newGeneration, this.genomeConfig.genomeLength)) {
             this.weiner = true;
             console.log("WE GOT A WEINEINERNENERNRENR!");
+            throw Error('we done bruh');
+        }
+
+        /*
+            If generation does not improve, delete an individual from array
+            and push the fittest individual from last generation into array.
+
+            This will prevent declines in fitness after generations.
+         */
+        if(!generationIsBetterThanLast) {
+            newGeneration.pop();
+            newGeneration.push(fittest);
         }
 
         this.individuals = newGeneration;
-
- 	},
+    },
 
 
 	getFittestIndividual: function() {
