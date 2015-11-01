@@ -1,3 +1,4 @@
+
 function Population(populationMAX, mutationRate) {
 
 	this.populationMAX = populationMAX;
@@ -35,9 +36,7 @@ Population.prototype = {
 
 
 		this.generation++;
-
         console.log(this.generation);
-
 
 		for(var i = 0; i < this.populationMAX; i++) {
 			this.individuals.push(new Individual());
@@ -75,7 +74,7 @@ Population.prototype = {
 			throw new Error("populationMax is undefined");
 
         var newGeneration = [];
-        
+
         if(this.generation < 1)
             this.initGeneration();
 
@@ -179,8 +178,5 @@ Population.selection = {
 
 Population.crossover = {
 	TWO_RANDOM_POINTS: 0,
-	TOGGLE_BETWEEN_PARENTS: 1,
-
-	/* Not really a good choice*/
-	HALF_AND_HALF: 2
+	TOGGLE_BETWEEN_PARENTS: 1
 };

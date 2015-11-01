@@ -37,10 +37,12 @@ var tools = {
 	selection: {
 		/*
 
+
 		 Fi = fitness of individual
 		 N = population count
 
 		 pi = fi / Σ j(fj) for j = 1 … N
+
 		 */
 		roulette: function(individuals, genomeConfig, crossoverID, populationMAX, matingPoolLength, mutateRate) {
 			var newGeneration = [];
@@ -81,10 +83,9 @@ var tools = {
 
             //TODO
             //if fitness does not approve, include last parents into current generation
-
             //no individual was fit enough!!
             if(matingPool.length === 0) {
-                matingPool = individuals; //resort back
+                matingPool = individuals ; //resort back
             }
 
 			/*
@@ -110,6 +111,7 @@ var tools = {
 							matingPool[tools.getRandomInt(0, matingPool.length - 1)],
 							mutateRate //mutate rate
 						);
+
 						break;
 					default:
 						console.log("CrossoverID error!");

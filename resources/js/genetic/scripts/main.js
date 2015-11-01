@@ -28,6 +28,7 @@ var tests = {
 		this.population.populationMAX = this.populationMAX;
 
 		this.population.createNewGeneration();
+		console.log(this.population.individuals);
 
 		//while(!this.population.weiner) {
 		//	this.population.createNewGeneration();
