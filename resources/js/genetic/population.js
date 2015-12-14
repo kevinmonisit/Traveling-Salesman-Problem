@@ -1,29 +1,70 @@
+/*
+	TODO:
+	Continue making TSP object
+	Finish createGeneration - 
+*/
 
-function Population(populationMAX, mutationRate) {
+var TSP = {
+	//total population count of a generation
+	populationCount: 12, 
 
-	this.populationMAX = populationMAX;
-	this.mutateRate = mutationRate;
+	//array of all individuals in current generation
+	individuals: [], 
+	generation: 0,
+	
+	generation: 0,
+	winner: true,
+	
+	genePoolPopulation: 3,
+	possibleGenes: [],
+	genomeLength: 10,
 
-	this.individuals = [];	
-	this.generation = 0;
+	plotMapArray: TSP.createPlotMap(10, 0, 100),
 
-	this.weiner = false;
-	this.selectionProcess = 1; //set to this.selection.ROULETTE
-	this.crossoverID = 1;
+	createGeneration: function() {
+		//generation is empty, therefore first generation
+		if(individuals.length == 0) {
+			for(var i = 0; i < TSP.populationCount) {
+				individuals.push(new Individual()); 
+				individuals[i].genome = TSP.shuffle(TSP.plotMapArray);
+				individuals[i].fitnessScore = tools.fitnessTest(individuals[i]);
+			}
 
-    this.matingPoolLength = 3;
+			//finished creating first generation, stop here
+			return;
+		}
+	},
 
-	this.genomeConfig = {
-		genomeLength: 10,
+	createPlotMap: function(numOfPlots, min, max) {
+		var arrayOfPlots = [];
 
-		binaryGenome: false,
-		//if binaryGenome is true, ignore below variables
-		min: 0,
-		max: 20
-	};
+		for(var i = 0; i < numOfPlots; i++) {
+			arrayOfPlots.push({
+				x: Math.floor(Math.random() * (max - min + 1)) + min,
+				y: Math.floor(Math.random() * (max - min + 1)) + min
+			});
+		}
 
+		return arrayOfPlots;
+	},
+
+	shuffle: function(array) {
+		var m = array.length, t, i;
+		// While there remain elements to shuffle…
+	  	while (m) {
+
+			// Pick a remaining element…
+			i = Math.floor(Math.random() * m--);
+
+			// And swap it with the current element.
+			t = array[m];
+			array[m] = array[i];
+			array[i] = t;
+		}
+
+		return array;
+	}
 }
-
 /*
 	If fitness level does not approve, save the two fittest parents and create a new generation!
 */
@@ -31,14 +72,10 @@ function Population(populationMAX, mutationRate) {
 Population.prototype = {
 
 	initGeneration: function() {
-		if(this.populationMAX <= 0 || !this.populationMAX)
-			throw new Error("populationMax is undefined");
-
-
 		this.generation++;
         console.log(this.generation);
 
-		for(var i = 0; i < this.populationMAX; i++) {
+		for(var i = 0; i < this.populationCount; i++) {
 			this.individuals.push(new Individual());
 			this.individuals[i].genomeConfig = this.genomeConfig;
 
@@ -49,17 +86,17 @@ Population.prototype = {
 			this.individuals[i].fitnessScore = tools.fitnessTest(this.individuals[i]);
 
 			if(this.individuals[i].fitnessScore == this.genomeConfig.genomeLength) {
-				this.weiner = true;
-				console.log("WE GOTTA WINENENERNERNRENERN! :" + " " + this.individuals[i].genome);
+				this.winner = true;
+				console.log("We have a winner! :" + " " + this.individuals[i].genome);
 			}
 		}
+
+		console.log(this.individuals);
 
 	},
 
     /*
         TODO:
-			finish up new generation functions
-
 			merge initGeneration and createNewGeneration functions together
 
 			in case fitness doesnt increase in population, always include the fittest individual
@@ -70,8 +107,8 @@ Population.prototype = {
 		Refactor createNewGeneration function
 	*/
 	createNewGeneration: function() {
-		if(this.populationMAX <= 0 || !this.populationMAX)
-			throw new Error("populationMax is undefined");
+		if(this.populationCount <= 0 || !this.populationCount)
+				throw new Error("populationMax is undefined");
 
         var newGeneration = [];
 
@@ -86,13 +123,13 @@ Population.prototype = {
 		this.generation++;
         console.log(this.generation);
 
-		if(this.selectionProcess == 1) { //roulette wheel selection
+        if(this.selectionProcess == 1) { //roulette wheel selection
             newGeneration = tools.selection.roulette(
                 this.individuals,
                 this.genomeConfig,
                 this.crossoverID,
-                this.populationMAX,
-                this.matingPoolLength
+                this.populationCount,
+                this.genePoolPopulation
             ); //returns a newGeneration array using roulette TODO: last parameter is sketchy
 		} else
             throw new Error("Selection ID is invalid!");
@@ -110,7 +147,7 @@ Population.prototype = {
         }
 
         if(tools.weinerChecker(newGeneration, this.genomeConfig.genomeLength)) {
-            this.weiner = true;
+            this.winner = true;
             console.log("WE GOT A WEINEINERNENERNRENR!");
             throw Error('we done bruh');
         }
@@ -127,8 +164,16 @@ Population.prototype = {
         }
 
         this.individuals = newGeneration;
+        console.log(this.individuals);
     },
 
+	_createGeneration: function() {
+		if(this.populationCount <= 0 || !this.populationCount)
+				throw new Error("populationMax is undefined");
+
+
+
+	},
 
 	getFittestIndividual: function() {
 		if(this.individuals.length <= 0)
@@ -142,6 +187,24 @@ Population.prototype = {
 		}
 
 		return fittest;
+	},
+
+	assignMutationToIndividual: function(individualIndex, genomeIndex, mutation) {
+		if(!individualIndex || !genomeIndex || !mutation)
+			throw Error("Parameters are invalid for assignMutationToIndividual function!");
+		else if(!this.individuals.length)
+			throw Error("Individuals/Current generation is empty!");
+
+		this.individuals[individualIndex].genome[genomeIndex] = mutation;
+
+	}, 
+	assignGenomeToIndividual: function(individualIndex, genome) {
+		if(!individualIndex| !genome)
+			throw Error("IndividualIndex or genome is invalid.");
+		else if(this.individuals.length == 0)
+			throw Error("Individual array is empty!");
+
+		this.individuals[individualIndex].genome = genome;
 	},
 
 	/*
@@ -169,14 +232,4 @@ Population.prototype = {
 
 	}
 
-};
-
-Population.selection = {
-	TOURNAMENT: 0,
-	ROULETTE: 1
-};
-
-Population.crossover = {
-	TWO_RANDOM_POINTS: 0,
-	TOGGLE_BETWEEN_PARENTS: 1
 };
