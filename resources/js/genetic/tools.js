@@ -48,12 +48,15 @@ var tools = {
 				individuals[i].probability = individuals[i].fitnessScore / sumOfFitnesses;
 			}
 
+			//loop enough times to create a new generation
 			for(var i = 0; i < individuals.length; i++) {
+				//used to crossover genomes into child
 				var pairOfParents = [];
 
 				//search for a pair of parents
 				for(var i = 0; i < 2; i++) {
 					var r = Math.random();
+
 					var runningScore = 0;
 
 					//search for the picked individual				
@@ -64,9 +67,11 @@ var tools = {
 					}
 				}
 
+				console.log(pairOfParents);
+
 				newGeneration.push(new Individual());
 				newGeneration[i].genome = tools.crossover.toggleBetweenParents(pairOfParents[0], pairOfParents[1], 1);
-
+				newGeneration.fitnessScore = tools.fitnessTest();
 			}
 
 			return newGeneration;
@@ -83,12 +88,12 @@ var tools = {
 		//calculate distance
 		for(var i = 1; i < indiv.genome.length; i++) {
 			//pythagorean theroem
-			var deltaX = Math.abs(indv.genome[i].x - indv.genome[i - 1].x);
-			var deltaY = Math.abs(indv.genome[i].y - indv.genome[i - 1].y);
+			var deltaX = Math.abs(indiv.genome[i].x - indiv.genome[i - 1].x);
+			var deltaY = Math.abs(indiv.genome[i].y - indiv.genome[i - 1].y);
 			
 			totalDistance += (Math.sqrt(deltaX + deltaY));
 		}
 
 		return 1 / totalDistance;
-	},
+	}
 };
