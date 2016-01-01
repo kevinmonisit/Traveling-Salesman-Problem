@@ -54,16 +54,18 @@ var tools = {
 				var pairOfParents = [];
 
 				//search for a pair of parents
-				for(var i = 0; i < 2; i++) {
+				for(var j = 0; j < 2; j++) {
 					var r = Math.random();
-
+					console.log(r);
 					var runningScore = 0;
 
 					//search for the picked individual				
-					for(var i = 0 ; i < individuals.length; i++) {
-						if(r >= runningScore && r <= runningScore+individuals[i].probability) {
-							pairOfParents.push(individuals[i]);
+					for(var k = 0 ; k < individuals.length; k++) {
+						if(r >= runningScore && r <= runningScore+individuals[k].probability) {
+							pairOfParents.push(individuals[k]);
+							break;
 						}
+						runningScore += individuals[k].probability;
 					}
 				}
 
@@ -88,12 +90,12 @@ var tools = {
 		//calculate distance
 		for(var i = 1; i < indiv.genome.length; i++) {
 			//pythagorean theroem
-			var deltaX = Math.abs(indiv.genome[i].x - indiv.genome[i - 1].x);
-			var deltaY = Math.abs(indiv.genome[i].y - indiv.genome[i - 1].y);
+			var deltaX = Math.pow(indiv.genome[i].x - indiv.genome[i - 1].x, 2);
+			var deltaY = Math.pow(indiv.genome[i].y - indiv.genome[i - 1].y, 2);
 			
 			totalDistance += (Math.sqrt(deltaX + deltaY));
 		}
 
-		return 1 / totalDistance;
+		return totalDistance;
 	}
 };

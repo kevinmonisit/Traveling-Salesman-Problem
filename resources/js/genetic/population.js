@@ -19,42 +19,44 @@ var TSP = {
 	possibleGenes: [],
 	genomeLength: 10,
 
-	plotMapArray: (function() {
-		var arrayOfPlots = [];
-		var max = 100,
-			min = 0,
-			numOfPlots = 10;
+	plotMapArray: null,
 
-		for(var i = 0; i < numOfPlots; i++) {
-			arrayOfPlots.push({
-				x: Math.floor(Math.random() * (max - min + 1)) + min,
-				y: Math.floor(Math.random() * (max - min + 1)) + min
-			});
-		}
+	_test: [12, 14, 166, 1231],
 
-		return arrayOfPlots;
-	})(),
+	//this function is affecting all individuals' genome
+	//most likely something is being looped and updating it
+
+	_shuffle: function(o){
+    	for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    		return o;
+	},
+
+	shuffle: function(array) {
+	    console.log(array);
+
+	    for (var i = array.length - 1; i > 0; i--) {
+	        var j = Math.floor(Math.random() * (i + 1));
+	        var temp = array[i];
+	        array[i] = array[j];
+			array[j] = temp;
+	    }
+
+	    return array;
+	},
 
 	createGeneration: function() {
-
-		//generation is empty, therefore first generation
 		if(TSP.individuals.length == 0) {
-			TSP.generation++;
-
 			for(var i = 0; i < TSP.populationCount; i++) {
-				TSP.individuals.push(new Individual()); 
-				TSP.individuals[i].genome = TSP.shuffle(TSP.plotMapArray);
-		
-				TSP.individuals[i].fitnessScore = tools.fitnessTest(TSP.individuals[i]);
+				TSP.individuals.push(new Individual());
+
+				//dereference variable to not cause trouble
+				var _genome = TSP.plotMapArray.slice();
+				TSP.individuals[i].genome = TSP.shuffle(_genome);
 			}
 
-			//finished creating first generation, stop here
 			return;
 		}
-
-		TSP.generation++;
-		//add safety net in case generaton is worse
-		TSP.individuals = tools.selection.roulette(TSP.individuals, 4);
+		
 	},
 
 	createPlotMap: function(numOfPlots, min, max) {
@@ -69,27 +71,32 @@ var TSP = {
 
 		return arrayOfPlots;
 	},
-
-	shuffle: function(array) {
-		var m = array.length, t, i;
-		// While there remain elements to shuffle…
-	  	while (m) {
-
-			// Pick a remaining element…
-			i = Math.floor(Math.random() * m--);
-
-			// And swap it with the current element.
-			t = array[m];
-			array[m] = array[i];
-			array[i] = t;
-		}
-
-		return array;
-	},
-
 	getFittestIndividual: function(indivArray) {
 		var fittest = indivArray[1];
 		for(var i = 1; i < indivArray.length; i++) {
 		}
+	},
+
+	getAverageFitnessOfPopulation: function() {
+		var sum = 0;
+		for(var i = 0; i < TSP.individuals; i++) {
+			sum += TSP.individuals.fitnessScore;	
+		}
+
+		return sum / TSP.individuals.length;
 	}
+}
+
+Array.prototype.shuffle = function() {
+    var input = this;
+     
+    for (var i = input.length-1; i >=0; i--) {
+     
+        var randomIndex = Math.floor(Math.random()*(i+1)); 
+        var itemAtIndex = input[randomIndex]; 
+         
+        input[randomIndex] = input[i]; 
+        input[i] = itemAtIndex;
+    }
+    return input;
 }
