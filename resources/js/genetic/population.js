@@ -19,17 +19,20 @@ var TSP = {
 	possibleGenes: [],
 	genomeLength: 10,
 
-	plotMapArray: null,
+	plotMapArray: (function() {
+		var arrayOfPlots = [];
+		var max = 100,
+			min = 0,
+			numOfPlots = 10;
 
-	_test: [12, 14, 166, 1231],
-
-	//this function is affecting all individuals' genome
-	//most likely something is being looped and updating it
-
-	_shuffle: function(o){
-    	for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-    		return o;
-	},
+		for(var i = 0; i < numOfPlots; i++) {
+			arrayOfPlots.push({
+				x: Math.floor(Math.random() * (max - min + 1)) + min,
+				y: Math.floor(Math.random() * (max - min + 1)) + min
+			});
+		}
+		
+	})(),
 
 	shuffle: function(array) {
 	    console.log(array);
