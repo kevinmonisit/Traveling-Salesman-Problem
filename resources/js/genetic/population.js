@@ -14,6 +14,8 @@ var TSP = {
 	
 	generation: 0,
 	winner: false,
+
+	genooome: [{x: 12, y: 5}, {x: 121, y: 65}, {x: 22, y:55}],
 	
 	genePoolPopulation: 3,
 	possibleGenes: [],
@@ -36,9 +38,8 @@ var TSP = {
 
 	})(),
 
+	//fisher yates
 	shuffle: function(array) {
-	    console.log(array);
-
 	    for (var i = array.length - 1; i > 0; i--) {
 	        var j = Math.floor(Math.random() * (i + 1));
 	        var temp = array[i];
@@ -50,32 +51,27 @@ var TSP = {
 	},
 
 	createGeneration: function() {
+		TSP.generation++;
+
+		//check if it's the first generation
 		if(TSP.individuals.length == 0) {
 			for(var i = 0; i < TSP.populationCount; i++) {
 				TSP.individuals.push(new Individual());
 
-				//dereference variable to not cause trouble
+				//dereference variable to not cause shuffle bug
 				var _genome = TSP.plotMapArray.slice();
+				
 				TSP.individuals[i].genome = TSP.shuffle(_genome);
+				TSP.individuals[i].fitnessScore = tools.fitnessTest(TSP.individuals[i]);
 			}
 
 			return;
 		}
-		
+
+		//TSP.individuals = tools.selection.roulette(TSP.individuals, 4);
+		TSP.individuals = tools.selection.tournament(TSP.individuals);
 	},
 
-	createPlotMap: function(numOfPlots, min, max) {
-		var arrayOfPlots = [];
-
-		for(var i = 0; i < numOfPlots; i++) {
-			arrayOfPlots.push({
-				x: Math.floor(Math.random() * (max - min + 1)) + min,
-				y: Math.floor(Math.random() * (max - min + 1)) + min
-			});
-		}
-
-		return arrayOfPlots;
-	},
 	getFittestIndividual: function(indivArray) {
 		var fittest = indivArray[1];
 		for(var i = 1; i < indivArray.length; i++) {
@@ -90,18 +86,4 @@ var TSP = {
 
 		return sum / TSP.individuals.length;
 	}
-}
-
-Array.prototype.shuffle = function() {
-    var input = this;
-     
-    for (var i = input.length-1; i >=0; i--) {
-     
-        var randomIndex = Math.floor(Math.random()*(i+1)); 
-        var itemAtIndex = input[randomIndex]; 
-         
-        input[randomIndex] = input[i]; 
-        input[i] = itemAtIndex;
-    }
-    return input;
 }
