@@ -10,18 +10,29 @@ var tools = {
 		},
 
 		twoPointCrossver: function(par1, par2, mutateRate ) {
-			var child = new Individual(),
-				child2 = new Individual();
+			var genomeLength = par1.genome.length;
 
-			var r1 = Math.floor(Math.random() * (par)),
-				r2 = Math.random(),
-				lowestRandomPoint = r2 < r1 ? r2 : r1;
+			var newChildGenome = [];
+
+			//get two random points in genome
+			var r1 = Math.floor(Math.random() * (genomeLength)),
+				r2 = Math.floor(Math.random() * (genomeLength)),
+				lowestRandomPoint = r2 < r1 ? r2 : r1,
+				highestRandomPoint = lowestRandomPoint == r2 ? r1 : r2;
 
 			if(r1 == r2) console.log("The universe has spoken.");
-			
-			for(var i = 0; i < par1.genome.length; i++) {
 
+			for(var i = 0; i < genomeLength; i++) {
+				if(i < lowestRandomPoint) {
+					 newChildGenome.push(par1.genome[i]);
+				} else if(i >= lowestRandomPoint && i <= highestRandomPoint) {
+					newChildGenome.push(par2.genome[i]);
+				} else if(i > highestRandomPoint) {
+					newChildGenome.push(par1.genome[i]);
+				}
 			}
+
+			return newChildGenome;
 
 			/*
 					0.15  0.2
@@ -92,14 +103,13 @@ end while
 			//potential bug: remember to check if the population count decrease or increase
 
 			for(var i = 0; i < individuals.length; i++) {
-				console.log("Test call ...");
 				var par1 = tools.selection.tournamentSelect(individuals),
 					par2 = tools.selection.tournamentSelect(individuals);
 
 				var child = new Individual();
 
-				child.genome = tools.crossover.toggleBetweenParents(par1, par2, mutateRate);
-				child.fitnessScore = tools.fitnessTest(child)
+				child.genome = tools.crossover.twoPointCrossver(par1, par2, mutateRate);
+				child.fitnessScore = tools.fitnessTest(child);
 
 				newGeneration.push(child);
 			}
@@ -190,7 +200,12 @@ end while
 
 			totalDistance += (Math.sqrt(deltaX + deltaY));
 		}
-
+		
 		return 1 / totalDistance;
 	}
 };
+
+//debug ~ makes life so much easier
+function a(string) {
+	console.log(string);
+}

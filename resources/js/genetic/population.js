@@ -6,7 +6,7 @@
 
 var TSP = {
 	//total population count of a generation
-	populationCount: 12, 
+	populationCount: 5, 
 
 	//array of all individuals in current generation
 	individuals: [], 
@@ -15,17 +15,17 @@ var TSP = {
 	generation: 0,
 	winner: false,
 
-	genooome: [{x: 12, y: 5}, {x: 121, y: 65}, {x: 22, y:55}],
-	
 	genePoolPopulation: 3,
 	possibleGenes: [],
 	genomeLength: 10,
 
 	plotMapArray: (function() {
 		var arrayOfPlots = [];
-		var max = 100,
-			min = 0,
+		var max = document.getElementById('canvas').width, // temporary, kevin, you'll probably forget anyways, so i will make this comment big and wide so you'll see it
+ 			min = 0,
 			numOfPlots = 10;
+
+
 
 		for(var i = 0; i < numOfPlots; i++) {
 			arrayOfPlots.push({
@@ -52,7 +52,7 @@ var TSP = {
 
 	createGeneration: function() {
 		TSP.generation++;
-
+		console.log("GENERATION: " + TSP.generation + " =============================");
 		//check if it's the first generation
 		if(TSP.individuals.length == 0) {
 			for(var i = 0; i < TSP.populationCount; i++) {
@@ -70,20 +70,15 @@ var TSP = {
 
 		//TSP.individuals = tools.selection.roulette(TSP.individuals, 4);
 		TSP.individuals = tools.selection.tournament(TSP.individuals);
-	},
-
-	getFittestIndividual: function(indivArray) {
-		var fittest = indivArray[1];
-		for(var i = 1; i < indivArray.length; i++) {
-		}
+		console.log(TSP.getAverageFitnessOfPopulation());
 	},
 
 	getAverageFitnessOfPopulation: function() {
 		var sum = 0;
-		for(var i = 0; i < TSP.individuals; i++) {
-			sum += TSP.individuals.fitnessScore;	
-		}
 
+		for(var i = 0; i < TSP.individuals.length; i++) {
+			sum += TSP.individuals[i].fitnessScore;
+		}
 		return sum / TSP.individuals.length;
 	}
 }
