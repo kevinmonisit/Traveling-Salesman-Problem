@@ -72,16 +72,15 @@ var tools = {
 					 newChildGenome.push(par1.genome[i]);
 				} else if(i >= lowestRandomPoint && i <= highestRandomPoint) {
 
-					if(!unselectedPar1Genome.indexOf(par2.genome[i])) {
+					if(unselectedPar1Genome.indexOf(par2.genome[i]) > - 1) {
 						
 						var randomIndex = Math.floor(Math.random() * (unselectedPar2Genome.length));
 						newChildGenome.push(unselectedPar2Genome[randomIndex]);
+						
 						unselectedPar2Genome.splice(randomIndex, 1);
 
 					} else {
-
 						newChildGenome.push(par2.genome[i]);
-					
 					}
 
 				} else if(i > highestRandomPoint) {

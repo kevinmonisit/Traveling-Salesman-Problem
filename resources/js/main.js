@@ -33,12 +33,17 @@
 // })(TSP);
 
 var par = {
-	genome: ['A', 'B', 'C', 'D', 'E']
+	genome: ['A', 'B', 'C', 'D', 'E', 'K', 'L', 'I', 'N', 'T']
 }
 var par2 = {
-	genome: ['E', 'A', 'C', 'D', 'B']
+	genome: ['A', 'B', 'C', 'D', 'E', 'K', 'L', 'I', 'N', 'T']
 }
 
+/*
+	Bug alert: Super small chance of a gene being the same in genome TSP
+*/
+
+TSP.shuffle(par2.genome);
 console.log("Parent 1 Genome: " + par.genome);
 console.log("Parent 2 Genome: " + par2.genome);
 console.log();
