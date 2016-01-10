@@ -31,10 +31,6 @@ var tools = {
 			var lowestRandomPoint = r2 < r1 ? r2 : r1,
 				highestRandomPoint = lowestRandomPoint == r2 ? r1 : r2;
 
-			console.log("Random 1 : " + r1);
-			console.log("Random 2 : " + r2);
-			console.log("LowestRandomPoint: " + lowestRandomPoint);
-
 			var unselectedPar1Genome = [],
 				unselectedPar2Genome = [],
 				selectedPar2Genome = [];
@@ -52,9 +48,6 @@ var tools = {
 				}
 			}
 
-			console.log("Original: " + unselectedPar2Genome);
-			console.log("Original: " + unselectedPar1Genome);
-
 			//delete duplicates in unselectedPar2Genome
 			for(var i = 0; i < unselectedPar2Genome.length; i++) {
 				if(unselectedPar1Genome.indexOf(unselectedPar2Genome[i]) > -1) {	
@@ -62,10 +55,6 @@ var tools = {
 					i--;
 				}
 			}
-
-			console.log("unselectedPar2Genome: " + unselectedPar2Genome);
-			console.log("unselectedPar1Genome: " + unselectedPar1Genome);
-			console.log("selectedPar2Genome: " + selectedPar2Genome);
 			
 			for(var i = 0; i < genomeLength; i++) {
 				if(i < lowestRandomPoint) {
