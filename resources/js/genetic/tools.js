@@ -16,17 +16,72 @@ var tools = {
 
 			//get two random points in genome
 			var r1 = Math.floor(Math.random() * (genomeLength)),
-				r2 = Math.floor(Math.random() * (genomeLength)),
-				lowestRandomPoint = r2 < r1 ? r2 : r1,
+				r2 = Math.floor(Math.random() * (genomeLength));
+
+			// if(r1 == r2) {
+			// 	console.log("r1 == r2");
+			// 	if(r2 + 1 <= genomeLength)
+			// 		r2++;
+			// 	else if(r2 - 1 >= 0)
+			// 		r2 --;
+			// 	else
+			// 		console.log('woah');
+			// }
+
+			var lowestRandomPoint = r2 < r1 ? r2 : r1,
 				highestRandomPoint = lowestRandomPoint == r2 ? r1 : r2;
 
-			if(r1 == r2) console.log("The universe has spoken.");
+			console.log("Random 1 : " + r1);
+			console.log("Random 2 : " + r2);
+			console.log("LowestRandomPoint: " + lowestRandomPoint);
 
+			var unselectedPar1Genome = [],
+				unselectedPar2Genome = [],
+				selectedPar2Genome = [];
+
+			for(var i = 0; i < genomeLength; i++) {
+				//get genes outside of the two random points
+				if(i < lowestRandomPoint || i > highestRandomPoint) {
+					unselectedPar1Genome.push(par1.genome[i]);
+					unselectedPar2Genome.push(par2.genome[i]);
+				}
+
+				//get genes inside of the two random points
+				if(i >= lowestRandomPoint && i <= highestRandomPoint) {
+					selectedPar2Genome.push(par2.genome[i]);
+				}
+			}
+
+			console.log("Original: " + unselectedPar2Genome);
+			console.log("Original: " + unselectedPar1Genome);
+
+			//delete duplicates in unselectedPar2Genome
+			for(var i = 0; i < unselectedPar2Genome.length; i++) {
+				if(unselectedPar1Genome.indexOf(unselectedPar2Genome[i]) > -1) {	
+					unselectedPar2Genome.splice(i, 1);
+					i--;
+				}
+			}
+
+			console.log("unselectedPar2Genome: " + unselectedPar2Genome);
+			console.log("unselectedPar1Genome: " + unselectedPar1Genome);
+			console.log("selectedPar2Genome: " + selectedPar2Genome);
+			
 			for(var i = 0; i < genomeLength; i++) {
 				if(i < lowestRandomPoint) {
 					 newChildGenome.push(par1.genome[i]);
 				} else if(i >= lowestRandomPoint && i <= highestRandomPoint) {
-					newChildGenome.push(par2.genome[i]);
+
+					if(!unselectedPar1Genome.indexOf(par2.genome[i])) {
+						
+						var randomIndex = Math.floor(Math.random() * (unselectedPar2Genome.length));
+						newChildGenome.push(unselectedPar2Genome[randomIndex]);
+						unselectedPar2Genome.slice(randomIndex, randomIndex);
+
+					} else {
+						newChildGenome.push(par2.genome[i]);
+					}
+
 				} else if(i > highestRandomPoint) {
 					newChildGenome.push(par1.genome[i]);
 				}
@@ -200,7 +255,7 @@ end while
 
 			totalDistance += (Math.sqrt(deltaX + deltaY));
 		}
-		
+
 		return 1 / totalDistance;
 	}
 };
