@@ -76,10 +76,12 @@ var tools = {
 						
 						var randomIndex = Math.floor(Math.random() * (unselectedPar2Genome.length));
 						newChildGenome.push(unselectedPar2Genome[randomIndex]);
-						unselectedPar2Genome.slice(randomIndex, randomIndex);
+						unselectedPar2Genome.splice(randomIndex, 1);
 
 					} else {
+
 						newChildGenome.push(par2.genome[i]);
+					
 					}
 
 				} else if(i > highestRandomPoint) {
