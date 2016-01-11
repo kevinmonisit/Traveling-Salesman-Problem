@@ -4,47 +4,35 @@
 */
 
 TSP.createGeneration();
- TSP.createGeneration();
-// // TSP.createGeneration();
 
-(function(TSP) {
-	var ctx = document.getElementById("canvas").getContext('2d');
-	
-	ctx.fillStyle = "#000";
-	
-	for(var i = 0; i < TSP.plotMapArray.length; i++) {
-		
-		console.log("a");
-		ctx.beginPath();
-		ctx.arc(TSP.plotMapArray[i].x,TSP.plotMapArray[i].y,12,0,2*Math.PI);
-		ctx.stroke();
+document.getElementById('btn').addEventListener("click", function() {
+	TSP.createGeneration();
+	main.updateRender();
+});
+
+var main = {
+	ctx: document.getElementById("canvas").getContext('2d'),
+
+	updateRender: function() {
+		main.ctx.fillStyle = "#000";
+		main.ctx.clearRect(0, 0, 900, 900);
+
+		var fittest = TSP.getFittestIndividualOfPopulation();
+
+		for(var i = 0; i < TSP.plotMapArray.length; i++) {
+			
+			main.ctx.beginPath();
+			main.ctx.arc(TSP.plotMapArray[i].x,TSP.plotMapArray[i].y,12,0,2*Math.PI);
+			main.ctx.stroke();
+		}
+
+		for(var i = 1; i < TSP.plotMapArray.length; i++) {
+			main.ctx.beginPath();
+			main.ctx.moveTo(fittest.genome[i - 1].x, fittest.genome[i - 1].y);
+			main.ctx.lineTo(fittest.genome[i].x, fittest.genome[i].y);
+			main.ctx.stroke();
+		}
+
 	}
 
-
-	for(var i = 1; i < TSP.plotMapArray.length; i++) {
-		ctx.beginPath();
-		ctx.moveTo(TSP.individuals[0].genome[i - 1].x, TSP.individuals[0].genome[i - 1].y);
-		ctx.lineTo(TSP.individuals[0].genome[i].x, TSP.individuals[0].genome[i].y);
-		ctx.stroke();
-	}
-
-	console.log(TSP.individuals[0]);
-
-})(TSP);
-
-var par = {
-	genome: ['A', 'B', 'C', 'D', 'E', 'K', 'L', 'I', 'N', 'T']
-}
-var par2 = {
-	genome: ['A', 'B', 'C', 'D', 'E', 'K', 'L', 'I', 'N', 'T']
-}
-
-/*
-	Bug alert: Super small chance of a gene being the same in genome TSP
-*/
-
-// TSP.shuffle(par2.genome);
-// console.log("Parent 1 Genome: " + par.genome);
-// console.log("Parent 2 Genome: " + par2.genome);
-// console.log();
-// console.log(tools.crossover.twoPointCrossver(par, par2));
+};
