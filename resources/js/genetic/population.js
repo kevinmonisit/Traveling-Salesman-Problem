@@ -6,7 +6,7 @@
 
 var TSP = {
 	//total population count of a generation
-	populationCount: 5, 
+	populationCount: 25, 
 
 	//array of all individuals in current generation
 	individuals: [],
@@ -19,7 +19,7 @@ var TSP = {
 
 	genePoolPopulation: 3,
 	possibleGenes: [],
-	genomeLength: 7,
+	genomeLength: 100,
 
 	//if average fitness decreases, it will give the program 10 tries to get a higher fitness
 	warningIteration: 10,
@@ -28,7 +28,7 @@ var TSP = {
 		var arrayOfPlots = [];
 		var max = document.getElementById('canvas').width, // temporary, kevin, you'll probably forget anyways, so i will make this comment big and wide so you'll see it
  			min = 0,
-			numOfPlots = 7;
+			numOfPlots = 100;
 
 		for(var i = 0; i < numOfPlots; i++) {
 			arrayOfPlots.push({
@@ -72,7 +72,6 @@ var TSP = {
 			return;
 		}
 
-		//TSP.individuals = tools.selection.roulette(TSP.individuals, 4);
 		TSP.lastIndividuals = TSP.individuals;
 
 		TSP.individuals = tools.selection.tournament(TSP.individuals);

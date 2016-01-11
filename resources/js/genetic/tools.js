@@ -116,8 +116,3 @@ var tools = {
 		return 1 / totalDistance;
 	}
 };
-
-//debug ~ makes life so much easier
-function a(string) {
-	console.log(string);
-}

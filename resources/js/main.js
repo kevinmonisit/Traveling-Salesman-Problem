@@ -10,6 +10,13 @@ document.getElementById('btn').addEventListener("click", function() {
 	main.updateRender();
 });
 
+window.addEventListener('keypress', function(e) {
+	if(e.keyCode == 32) {
+		TSP.createGeneration();
+		main.updateRender();
+	}
+});
+
 var main = {
 	ctx: document.getElementById("canvas").getContext('2d'),
 
