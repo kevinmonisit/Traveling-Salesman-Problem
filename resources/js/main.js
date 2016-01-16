@@ -3,9 +3,25 @@
 	Kevin's Science Fair ---
 */
 
+//init the cities
+TSP.plotMapArray = (function(TSP) {
+	var arrayOfPlots = [];
+	var max = document.getElementById('canvas').width,
+		min = 0,
+		numOfPlots = this.TSP.genomeLength;
+
+	for(var i = 0; i < numOfPlots; i++) {
+		arrayOfPlots.push({
+			x: Math.floor(Math.random() * (max - min + 1)) + min,
+			y: Math.floor(Math.random() * (document.getElementById('canvas').height - min + 1)) + min
+		});
+	}
+
+	return arrayOfPlots;
+
+})(TSP);
 
 TSP.createGeneration();
-
 
 var main = {
 	ctx: document.getElementById("canvas").getContext('2d'),
@@ -17,19 +33,41 @@ var main = {
 		var fittest = TSP.getFittestIndividualOfPopulation();
 
 		for(var i = 0; i < TSP.plotMapArray.length; i++) {
+	
+			//draw starting point
+			if(i == 0) {
+				main.ctx.beginPath();
+
+				main.ctx.arc(TSP.startingPoint.x,TSP.startingPoint.y,10,0,2*Math.PI);		
+				main.ctx.fillStyle = '#EA4335';
+				main.ctx.fill();
+				main.ctx.lineWidth = 2;
+				main.ctx.stroke();
+			}
 			
 			main.ctx.beginPath();
-			main.ctx.arc(TSP.plotMapArray[i].x,TSP.plotMapArray[i].y,12,0,2*Math.PI);
+		
+			main.ctx.arc(TSP.plotMapArray[i].x,TSP.plotMapArray[i].y,9,0,2*Math.PI);
+			main.ctx.lineWidth = 1;
 			main.ctx.stroke();
 		}
+
+		main.ctx.beginPath();
+		main.ctx.moveTo(TSP.startingPoint.x, TSP.startingPoint.y);
+		main.ctx.lineTo(fittest.genome[0].x, fittest.genome[0].y);
+		main.ctx.stroke();
 
 		for(var i = 1; i < TSP.plotMapArray.length; i++) {
 			main.ctx.beginPath();
 			main.ctx.moveTo(fittest.genome[i - 1].x, fittest.genome[i - 1].y);
 			main.ctx.lineTo(fittest.genome[i].x, fittest.genome[i].y);
 			main.ctx.stroke();
-		}
+		 }
 
+ 		main.ctx.beginPath();
+		main.ctx.moveTo(fittest.genome[fittest.genome.length - 1].x, fittest.genome[fittest.genome.length - 1].y);
+		main.ctx.lineTo(TSP.startingPoint.x, TSP.startingPoint.y);
+		main.ctx.stroke();
 	},
 
 	setButtonFunction: function(id, func) {
@@ -37,6 +75,8 @@ var main = {
 	}
 
 };
+
+main.updateRender();
 
 var a = [1, 2, 3, 4, 5];
 var b = a.slice();

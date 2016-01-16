@@ -13,7 +13,7 @@ var tools = {
 				//get two random points in genome
 				var r1 = Math.floor(Math.random() * (genomeLength)),
 					r2 = Math.floor(Math.random() * (genomeLength));
-
+					
 				var lowestRandomPoint = r2 < r1 ? r2 : r1,
 					highestRandomPoint = lowestRandomPoint == r2 ? r1 : r2,
 					selectedGenesFromParent2 = [];
@@ -32,7 +32,7 @@ var tools = {
 
 				newChildGenome = newChildGenome.concat(selectedGenesFromParent2);
 
-				for(var i = lowestRandomPoint; i < par1.genome.length; i++) {
+				for(var i = lowestRandomPoint; i < par1.genome.length ; i++) {
 					if(selectedGenesFromParent2.indexOf(par1.genome[i]) == -1)
 						newChildGenome.push(par1.genome[i]);
 				}
@@ -40,22 +40,6 @@ var tools = {
 			} else {
 				newChildGenome = par1.fitnessScore > par2.fitnessScore ? par1.genome : par2.genome;
 			}
-		
-			/*
-				2optSwap(route, i, k) {
-			       1. take route[1] to route[i-1] and add them in order to new_route
-			       2. take route[i] to route[k] and add them in reverse order to new_route
-			       3. take route[k+1] to end and add them in order to new_route
-			       return new_route;
-			   	}
-			*/
-
-			// if(twoOptSwap) {
-			// 	var r = Math.floor(Math.random() * (newChildGenome.length)),
-			// 		r2 = Math.floor(Math.random() * (newChildGenome.length));
-
-			// 	newChildGenome = tools.crossover.twoOptSwap(newChildGenome, r, r2);
-			// }
 
 			var random = Math.random();
 			if(random < mutateRate) {
@@ -146,7 +130,7 @@ var tools = {
 
 			//how many selected individuals we want
 			for(var i = 0; i < genePoolPopulation; i++) {
-				selectedIndivs.push(individuals[Math.floor(Math.random()*(individuals.length))]);
+				selectedIndivs.push(individuals[Math.floor(Math.random() * (individuals.length))]);
 			}
 
 			//find the fittest individual from the selected indivs
@@ -161,11 +145,19 @@ var tools = {
 		},
 	},
 
+	/*
+		Calculates distance travled and automatically adds the starting point
+		in the calculation. (Starts and reconnects to this point)
+	*/
 	fitnessTest: function(indiv) {
 		var totalDistance = 0;
+		var genomeLength = indiv.genome.length - 1;
+
+		totalDistance += tools.distanceToStartingPoint(indiv, 0);
 
 		//calculate distance
-		for(var i = 1; i < indiv.genome.length; i++) {
+		for(var i = 1; i < genomeLength; i++) {
+
 			//distance formula
 			var deltaX = Math.pow(indiv.genome[i].x - indiv.genome[i - 1].x, 2);
 			var deltaY = Math.pow(indiv.genome[i].y - indiv.genome[i - 1].y, 2);
@@ -173,6 +165,17 @@ var tools = {
 			totalDistance += (Math.sqrt(deltaX + deltaY));
 		}
 
+		totalDistance += tools.distanceToStartingPoint(indiv, genomeLength);
+		//larger distance gives off a smaller number1
 		return 1 / totalDistance;
-	}
+	},
+
+	//absolute value?
+	distanceToStartingPoint: function(indiv, genomeIndex) {
+
+		var deltaX = Math.abs(Math.pow(TSP.startingPoint.x - indiv.genome[genomeIndex].x, 2));
+		var deltaY = Math.abs(Math.pow(TSP.startingPoint.y - indiv.genome[genomeIndex].y, 2));
+		
+		return (Math.sqrt(deltaX + deltaY));
+	},
 };

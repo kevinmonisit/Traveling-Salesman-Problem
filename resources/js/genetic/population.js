@@ -1,41 +1,33 @@
 
-/*
-	lol, i tried connect last to first, fix it kevin, kthxbi
-*/
-
 var TSP = {
 	//total population count of a generation
-	populationCount: 2000, 
+	populationCount: 20, 
 
 	//array of all individuals in current generation
 	individuals: [],
+	lastFittestIndividual: null,
+
 	generation: 0,
 	mutateRate: 0.05,
-	crossoverRate: 0.65,
-	
-	generation: 0,
-	winner: false,
+	crossoverRate: 0.9,
 
 	genePoolPopulation: 3,
 	possibleGenes: [],
-	genomeLength: 50,
+	genomeLength: 10,
 
 	twoOptMutation: true,
+	init: false,
 
-	plotMapArray: (function() {
-		var arrayOfPlots = [];
+	plotMapArray: null,
+
+	startingPoint: (function() {
 		var max = document.getElementById('canvas').width,
- 			min = 0,
-			numOfPlots = 50;
+			min = 0;
 
-		for(var i = 0; i < numOfPlots; i++) {
-			arrayOfPlots.push({
-				x: Math.floor(Math.random() * (max - min + 1)) + min,
-				y: Math.floor(Math.random() * (max - min + 1)) + min
-			});
-		}
-
-		return arrayOfPlots;
+		return {
+			x: Math.floor(Math.random() * (max - min + 1)) + min,
+			y: Math.floor(Math.random() * (document.getElementById('canvas').height - min + 1)) + min
+		};
 
 	})(),
 
@@ -64,9 +56,10 @@ var TSP = {
 				//dereference variable to not cause shuffle bug
 				var _genome = TSP.plotMapArray.slice();
 				
-				//TSP.individuals[i].genome = TSP.shuffle(_genome);
+				TSP.individuals[i].genome = TSP.shuffle(_genome);
 				TSP.individuals[i].genome = _genome;
-				TSP.individuals[i].fitnessScore = tools.fitnessTest(TSP.individuals[i]);
+
+//				TSP.individuals[i].fitnessScore = tools.fitnessTest(TSP.individuals[i]);
 			}
 
 			return;
