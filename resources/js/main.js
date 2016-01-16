@@ -3,19 +3,9 @@
 	Kevin's Science Fair ---
 */
 
+
 TSP.createGeneration();
 
-document.getElementById('btn').addEventListener("click", function() {
-	TSP.createGeneration();
-	main.updateRender();
-});
-
-window.addEventListener('keypress', function(e) {
-	if(e.keyCode == 32) {
-		TSP.createGeneration();
-		main.updateRender();
-	}
-});
 
 var main = {
 	ctx: document.getElementById("canvas").getContext('2d'),
@@ -40,6 +30,61 @@ var main = {
 			main.ctx.stroke();
 		}
 
+	},
+
+	setButtonFunction: function(id, func) {
+		document.getElementById(id).addEventListener('click', func);
 	}
 
 };
+
+var a = [1, 2, 3, 4, 5];
+var b = a.slice();
+
+function twoOptSwap(genome, randomPoint, randomPoint2) {
+	var new_route = [];
+
+	// var lowestRandomPoint = randomPoint2 < randomPoint ? randomPoint2 : randomPoint,
+	// 	highestRandomPoint = lowestRandomPoint == randomPoint2 ? randomPoint : randomPoint2;
+	
+	for(var i = 0; i <= randomPoint - 1; i ++) {
+		new_route.push(genome[i]);
+	}
+
+	//reverse order
+	for(var i = randomPoint2; i >= randomPoint; i--) {
+		new_route.push(genome[i]);
+	}
+
+	for(var i = randomPoint2 + 1; i < genome.length; i++) {
+		new_route.push(genome[i]);
+	}
+	
+	return new_route;
+}
+
+
+main.setButtonFunction('btn-gen', function() {
+	TSP.createGeneration();
+	main.updateRender();	
+});
+
+main.setButtonFunction('btn-2opt', function() {
+	if(TSP.toggleTwoOptMutation())
+		this.innerHTML = 'Untoggle 2-opt mutation';
+	else
+		this.innerHTML = 'Toggle 2-opt mutation';
+});
+
+main.setButtonFunction('btn-reset', function() {
+	TSP.resetGeneration();
+	main.updateRender();
+});
+
+window.addEventListener('keypress', function(e) {
+	if(e.keyCode == 32) {
+		TSP.createGeneration();
+		main.updateRender();
+	}
+});
+

@@ -1,34 +1,32 @@
+
 /*
-	TODO:
-	Continue making TSP object
-	Finish createGeneration - 
+	lol, i tried connect last to first, fix it kevin, kthxbi
 */
 
 var TSP = {
 	//total population count of a generation
-	populationCount: 25, 
+	populationCount: 2000, 
 
 	//array of all individuals in current generation
 	individuals: [],
-	lastIndividuals: [],
-	lastAverageFitness: 0,
 	generation: 0,
+	mutateRate: 0.05,
+	crossoverRate: 0.65,
 	
 	generation: 0,
 	winner: false,
 
 	genePoolPopulation: 3,
 	possibleGenes: [],
-	genomeLength: 100,
+	genomeLength: 50,
 
-	//if average fitness decreases, it will give the program 10 tries to get a higher fitness
-	warningIteration: 10,
+	twoOptMutation: true,
 
 	plotMapArray: (function() {
 		var arrayOfPlots = [];
-		var max = document.getElementById('canvas').width, // temporary, kevin, you'll probably forget anyways, so i will make this comment big and wide so you'll see it
+		var max = document.getElementById('canvas').width,
  			min = 0,
-			numOfPlots = 100;
+			numOfPlots = 50;
 
 		for(var i = 0; i < numOfPlots; i++) {
 			arrayOfPlots.push({
@@ -57,6 +55,7 @@ var TSP = {
 		TSP.generation++;
 
 		console.log("GENERATION: " + TSP.generation + " =============================");
+
 		//check if it's the first generation
 		if(TSP.individuals.length == 0) {
 			for(var i = 0; i < TSP.populationCount; i++) {
@@ -65,16 +64,15 @@ var TSP = {
 				//dereference variable to not cause shuffle bug
 				var _genome = TSP.plotMapArray.slice();
 				
-				TSP.individuals[i].genome = TSP.shuffle(_genome);
+				//TSP.individuals[i].genome = TSP.shuffle(_genome);
+				TSP.individuals[i].genome = _genome;
 				TSP.individuals[i].fitnessScore = tools.fitnessTest(TSP.individuals[i]);
 			}
 
 			return;
 		}
 
-		TSP.lastIndividuals = TSP.individuals;
-
-		TSP.individuals = tools.selection.tournament(TSP.individuals);
+		TSP.individuals = tools.selection.tournament(TSP.individuals, TSP.mutateRate, TSP.twoOptMutation);
 		console.log(TSP.getAverageFitnessOfPopulation());
 	},
 
@@ -95,5 +93,37 @@ var TSP = {
 		}
 
 		return fittest;
+	},
+
+	resetGeneration: function() {
+		console.log("RESETING GENERATION!");
+		
+		TSP.plotMapArray = (function() {
+			var arrayOfPlots = [];
+			var max = document.getElementById('canvas').width,
+	 			min = 0,
+				numOfPlots = 100;
+
+			for(var i = 0; i < numOfPlots; i++) {
+				arrayOfPlots.push({
+					x: Math.floor(Math.random() * (max - min + 1)) + min,
+					y: Math.floor(Math.random() * (max - min + 1)) + min
+				});
+			}
+
+			return arrayOfPlots;
+
+		})();
+		TSP.individuals = [];
+		TSP.createGeneration();
+	},
+
+	toggleTwoOptMutation: function() {
+		if(this.twoOptMutation)
+			this.twoOptMutation = false;
+		else
+			this.twoOptMutation = true;
+
+		return this.twoOptMutation;
 	}
 }
