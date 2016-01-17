@@ -1,19 +1,19 @@
 
 var TSP = {
 	//total population count of a generation
-	populationCount: 3, 
+	populationCount: 150, 
 
 	//array of all individuals in current generation
 	individuals: [],
 	lastFittestIndividual: null,
 
 	generation: 0,
-	mutateRate: 0.10,
+	mutateRate: 0.30,
 	crossoverRate: 0.8,
 
 	genePoolPopulation: 3,
 	possibleGenes: [],
-	genomeLength: 6,
+	genomeLength: 100,
 
 	twoOptMutation: true,
 	init: false,
@@ -67,7 +67,7 @@ var TSP = {
 
 		lastFittestIndividual = TSP.getFittestIndividualOfPopulation();
 		TSP.individuals = tools.selection.tournament(TSP.individuals, TSP.mutateRate, TSP.twoOptMutation);
-//		TSP.individuals.push(lastFittestIndividual);
+		//TSP.individuals.push(lastFittestIndividual);
 	
 		console.log(TSP.getAverageFitnessOfPopulation());
 	},

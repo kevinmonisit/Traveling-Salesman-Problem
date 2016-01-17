@@ -126,7 +126,7 @@ var tools = {
 
 		tournamentSelect: function(individuals) {
 			var selectedIndivs = [];
-			var genePoolPopulation = 6;
+			var genePoolPopulation = Math.floor(TSP.populationCount * 0.2);
 
 			//how many selected individuals we want
 			for(var i = 0; i < genePoolPopulation; i++) {
