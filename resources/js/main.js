@@ -59,6 +59,7 @@ var main = {
 
 		for(var i = 1; i < TSP.plotMapArray.length; i++) {
 			main.ctx.beginPath();
+			
 			main.ctx.moveTo(fittest.genome[i - 1].x, fittest.genome[i - 1].y);
 			main.ctx.lineTo(fittest.genome[i].x, fittest.genome[i].y);
 			main.ctx.stroke();

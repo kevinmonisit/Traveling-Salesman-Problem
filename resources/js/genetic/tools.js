@@ -43,13 +43,25 @@ var tools = {
 
 			var random = Math.random();
 			if(random < mutateRate) {
-				var p1 = Math.floor(Math.random() * ((genomeLength - 1) - 1 ) + 1),
-					p2 = Math.floor(Math.random() * ((genomeLength - 1) - 1) + 1);
+				// var p1 = Math.floor(Math.random() * ((genomeLength - 1) - 1 ) + 1),
+				// 	p2 = Math.floor(Math.random() * ((genomeLength - 1) - 1) + 1);
 
-				//swap
-				var a = newChildGenome[p1];
-				newChildGenome[p1] = newChildGenome[p2];
-				newChildGenome[p2] = a;
+				// //swap
+				// var a = newChildGenome[p1];
+				// newChildGenome[p1] = newChildGenome[p2];
+				// newChildGenome[p2] = a;
+			
+				var k = Math.floor(Math.random() * (genomeLength - 1)),
+				 	i = Math.floor(Math.random() * (genomeLength - 1));
+				
+				while(i == k) {
+					i = Math.floor(Math.random() * (genomeLength - 1));
+				}
+
+				var lowestRandomPoint = k < i ? k : i,
+					highestRandomPoint = lowestRandomPoint == k ? i : k,
+				 
+				newChildGenome = tools.crossover.twoOptSwapGenome(newChildGenome, lowestRandomPoint, highestRandomPoint);
 			}
 
 
@@ -66,31 +78,19 @@ var tools = {
 
 		   i and k are arbitary
 		*/
-		twoOptSwap: function(genome, randomPoint, randomPoint2) {
+		twoOptSwapGenome: function(genome, k, j) {
 			var new_route = [];
 
-			// var lowestRandomPoint = randomPoint2 < randomPoint ? randomPoint2 : randomPoint,
-			// 	highestRandomPoint = lowestRandomPoint == randomPoint2 ? randomPoint : randomPoint2;
-			
-			for(var i = 1; i <= randomPoint - 1; i ++) {
-				new_route.push(genome[i]);
+			for(var i = 0; i <= k - 1; i ++) {
+				new_route.push(genome[i]);			
 			}
 
 			//reverse order
-			for(var i = randomPoint2; i >= randomPoint; i--) {
+			for(var i = j; i >= k; i--) {
 				new_route.push(genome[i]);
 			}
 			
-			var _t = [];
-			for(var i = randomPoint; i <= randomPoint2; i++) {
-				_t.push(genome[i]);
-			}
-
-			_t.reverse();
-
-			new_route.concat(_t);
-
-			for(var i = randomPoint2 + 1; i < genome.length; i++) {
+			for(var i = j + 1; i < genome.length; i++) {
 				new_route.push(genome[i]);
 			}
 			
@@ -159,8 +159,16 @@ var tools = {
 		for(var i = 1; i < genomeLength; i++) {
 
 			//distance formula
-			var deltaX = Math.pow(indiv.genome[i].x - indiv.genome[i - 1].x, 2);
-			var deltaY = Math.pow(indiv.genome[i].y - indiv.genome[i - 1].y, 2);
+			var deltaX,
+				deltaY;
+
+		
+			try{
+				deltaX  = Math.pow(indiv.genome[i].x - indiv.genome[i - 1].x, 2);
+				deltaY = Math.pow(indiv.genome[i].y - indiv.genome[i - 1].y, 2);
+			} catch(e) {
+				console.log(indiv);
+			}
 
 			totalDistance += (Math.sqrt(deltaX + deltaY));
 		}
