@@ -54,7 +54,7 @@ var tools = {
 
 		tournament: function(individuals) {
 			var newGeneration = [];
-			var mutateRate = 0.35;
+			var mutateRate = 0.05;
 			//potential bug: remember to check if the population count decrease or increase
 
 			for(var i = 0; i < individuals.length; i++) {
