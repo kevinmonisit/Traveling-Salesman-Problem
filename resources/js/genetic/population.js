@@ -2,11 +2,13 @@
 	TODO:
 	Continue making TSP object
 	Finish createGeneration - 
+
+	Implement 2-opt swap in mutation algorithm
 */
 
 var TSP = {
 	//total population count of a generation
-	populationCount: 25, 
+	populationCount: 1000, 
 
 	//array of all individuals in current generation
 	individuals: [],
@@ -19,16 +21,16 @@ var TSP = {
 
 	genePoolPopulation: 3,
 	possibleGenes: [],
-	genomeLength: 100,
+	genomeLength: 50,
 
 	//if average fitness decreases, it will give the program 10 tries to get a higher fitness
-	warningIteration: 10,
+	warningIteration: 50,
 
 	plotMapArray: (function() {
 		var arrayOfPlots = [];
 		var max = document.getElementById('canvas').width, // temporary, kevin, you'll probably forget anyways, so i will make this comment big and wide so you'll see it
  			min = 0,
-			numOfPlots = 100;
+			numOfPlots = 50;
 
 		for(var i = 0; i < numOfPlots; i++) {
 			arrayOfPlots.push({
