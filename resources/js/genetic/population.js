@@ -1,45 +1,33 @@
-/*
-	TODO:
-	Continue making TSP object
-	Finish createGeneration - 
-
-	Implement 2-opt swap in mutation algorithm
-*/
 
 var TSP = {
 	//total population count of a generation
-	populationCount: 1000, 
+	populationCount: 150, 
 
 	//array of all individuals in current generation
 	individuals: [],
-	lastIndividuals: [],
-	lastAverageFitness: 0,
+	lastFittestIndividual: null,
+
 	generation: 0,
-	
-	generation: 0,
-	winner: false,
+	mutateRate: 0.30,
+	crossoverRate: 0.8,
 
 	genePoolPopulation: 3,
 	possibleGenes: [],
-	genomeLength: 50,
+	genomeLength: 100,
 
-	//if average fitness decreases, it will give the program 10 tries to get a higher fitness
-	warningIteration: 50,
+	twoOptMutation: true,
+	init: false,
 
-	plotMapArray: (function() {
-		var arrayOfPlots = [];
-		var max = document.getElementById('canvas').width, // temporary, kevin, you'll probably forget anyways, so i will make this comment big and wide so you'll see it
- 			min = 0,
-			numOfPlots = 50;
+	plotMapArray: null,
 
-		for(var i = 0; i < numOfPlots; i++) {
-			arrayOfPlots.push({
-				x: Math.floor(Math.random() * (max - min + 1)) + min,
-				y: Math.floor(Math.random() * (max - min + 1)) + min
-			});
-		}
+	startingPoint: (function() {
+		var max = document.getElementById('canvas').width,
+			min = 0;
 
-		return arrayOfPlots;
+		return {
+			x: Math.floor(Math.random() * (max - min + 1)) + min,
+			y: Math.floor(Math.random() * (document.getElementById('canvas').height - min + 1)) + min
+		};
 
 	})(),
 
@@ -59,6 +47,7 @@ var TSP = {
 		TSP.generation++;
 
 		console.log("GENERATION: " + TSP.generation + " =============================");
+
 		//check if it's the first generation
 		if(TSP.individuals.length == 0) {
 			for(var i = 0; i < TSP.populationCount; i++) {
@@ -68,15 +57,18 @@ var TSP = {
 				var _genome = TSP.plotMapArray.slice();
 				
 				TSP.individuals[i].genome = TSP.shuffle(_genome);
-				TSP.individuals[i].fitnessScore = tools.fitnessTest(TSP.individuals[i]);
+				TSP.individuals[i].genome = _genome;
+
+//				TSP.individuals[i].fitnessScore = tools.fitnessTest(TSP.individuals[i]);
 			}
 
 			return;
 		}
 
-		TSP.lastIndividuals = TSP.individuals;
-
-		TSP.individuals = tools.selection.tournament(TSP.individuals);
+		lastFittestIndividual = TSP.getFittestIndividualOfPopulation();
+		TSP.individuals = tools.selection.tournament(TSP.individuals, TSP.mutateRate, TSP.twoOptMutation);
+		//TSP.individuals.push(lastFittestIndividual);
+	
 		console.log(TSP.getAverageFitnessOfPopulation());
 	},
 
@@ -97,5 +89,37 @@ var TSP = {
 		}
 
 		return fittest;
+	},
+
+	resetGeneration: function() {
+		console.log("RESETING GENERATION!");
+		
+		TSP.plotMapArray = (function() {
+			var arrayOfPlots = [];
+			var max = document.getElementById('canvas').width,
+	 			min = 0,
+				numOfPlots = 100;
+
+			for(var i = 0; i < numOfPlots; i++) {
+				arrayOfPlots.push({
+					x: Math.floor(Math.random() * (max - min + 1)) + min,
+					y: Math.floor(Math.random() * (max - min + 1)) + min
+				});
+			}
+
+			return arrayOfPlots;
+
+		})();
+		TSP.individuals = [];
+		TSP.createGeneration();
+	},
+
+	toggleTwoOptMutation: function() {
+		if(this.twoOptMutation)
+			this.twoOptMutation = false;
+		else
+			this.twoOptMutation = true;
+
+		return this.twoOptMutation;
 	}
 }
