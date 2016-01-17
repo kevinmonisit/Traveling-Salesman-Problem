@@ -4,6 +4,26 @@
         <meta lang="en-us">
         <meta charset='utf-8'>
         <title>Genetic Algorithms</title>
+        <style>
+            #canvas-container {
+                width: 100%;
+                text-align: center;
+            }
+
+            #canvas-container {
+                width:100%;
+                text-align: center;
+            }
+
+            #canvas {
+                display: inline;
+            }
+
+            #btn-container {
+                text-align: center;
+            }
+
+        </style>
     </header>
 
     <body>
@@ -25,27 +45,33 @@
     	<script src='resources/js/genetic/tools.js'></script>
 
 	   	<script src='resources/js/main.js'></script>
-        
-        <style>
-            #canvas-container {
-                width: 100%;
-                text-align: center;
-            }
 
-            #canvas-container {
-                width:100%;
-                text-align: center;
-            }
+        <script>
 
-            #canvas {
-                display: inline;
-            }
+            main.setButtonFunction('btn-gen', function() {
+                TSP.createGeneration();
+                main.updateRender();    
+            });
 
-            #btn-container {
-                text-align: center;
-            }
+            main.setButtonFunction('btn-2opt', function() {
+                if(TSP.toggleTwoOptMutation())
+                    this.innerHTML = 'Untoggle 2-opt mutation';
+                else
+                    this.innerHTML = 'Toggle 2-opt mutation';
+            });
 
-        </style>
+            main.setButtonFunction('btn-reset', function() {
+                TSP.resetGeneration();
+                main.updateRender();
+            });
 
+            window.addEventListener('keypress', function(e) {
+                if(e.keyCode == 32) {
+                    TSP.createGeneration();
+                   main.updateRender();
+                }
+            });
+
+        </script>
     </body>
 </html>
