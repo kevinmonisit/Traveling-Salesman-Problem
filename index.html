@@ -28,16 +28,13 @@
 
     <body>
         <div id='canvas-container'>
-            <canvas id='canvas' width="800" height="650"></canvas>
+            <canvas id='canvas' width="900" height="650"></canvas>
         </div>
 
         <div id='btn-container'>
             <button id='btn-gen'>New Generation</button> <br>
             <button id='btn-reset'>Reset Generation</button> <br>
             <button id='btn-2opt'>Toggle 2-opt mutation</button> <br>
-            Num. of cities:
-            <input style='width:15px' type='text'></input>
-
         </div>
 
     	<script src='resources/js/genetic/individual.js'></script>
@@ -58,11 +55,6 @@
                     this.innerHTML = 'Untoggle 2-opt mutation';
                 else
                     this.innerHTML = 'Toggle 2-opt mutation';
-            });
-
-            main.setButtonFunction('btn-reset', function() {
-                TSP.resetGeneration();
-                main.updateRender();
             });
 
             window.addEventListener('keypress', function(e) {

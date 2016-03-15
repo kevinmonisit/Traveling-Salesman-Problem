@@ -3,6 +3,38 @@ var tools = {
 
 	crossover: {
 
+		_twoPointCrossver: function(parent1, parent1, mutationRate, crossoverRate)  {
+			var newChildGenome = [];
+
+			var randomPoint1 = Math.floor(Math.random() * (genomeLength)),
+				randomPoint2 = Math.floor(Math.random() * (genomeLength));
+
+			var lowestRandomPoint = randomPoint2 < randomPoint1 ? randomPoint2 : randomPoint1,
+				highestRandomPoint = randomPoint2 > randomPoint1 ? randomPoint2 : randomPoint1;
+
+			//get the genes in-between the two random points in second parent
+			var selectedGenesFromParent2 = [];
+
+			for(var geneIndex = lowestRandomPoint; geneIndex < highestRandomPoint; geneIndex++) 
+				selectedGenesFromParent2.push(parent2.genome[geneIndex]);
+			
+			//push genes from first parent that aren't in the selected genes of second parent
+			for(var geneIndex = 0; i < lowestRandomPoint; geneIndex++)  {
+				if(selectedGenesFromParent2.indexOf(parent1.genome[geneIndex]))
+					newChildGenome.push(parent1.genome[geneIndex]);
+			}
+
+			newChildGenome.concat(selectedGenesFromParent2);
+
+			//go through rest of first parent's genome and push genes that weren't selected in second parent
+			for(var geneIndex = lowestRandomPoint; geneIndex < parent1.genome.length; geneIndex++) {
+				if(selectedGenesFromParent2.indexOf(parent1.genome[geneIndex]))
+					newChildGenome.push(parent1.genome[geneIndex]);
+			}
+				
+		},
+
+
 		twoPointCrossver: function(par1, par2, mutateRate, crossoverRate) {
 			var genomeLength = par1.genome.length;
 
@@ -10,6 +42,7 @@ var tools = {
 
 			var crossoverProbability = Math.random();
 			if(crossoverProbability < crossoverRate) {
+
 				//get two random points in genome
 				var r1 = Math.floor(Math.random() * (genomeLength)),
 					r2 = Math.floor(Math.random() * (genomeLength));
@@ -17,9 +50,6 @@ var tools = {
 				var lowestRandomPoint = r2 < r1 ? r2 : r1,
 					highestRandomPoint = lowestRandomPoint == r2 ? r1 : r2,
 					selectedGenesFromParent2 = [];
-
-				//im sorry to whoever is reading this code
-				//i was in a rush, don't judge me
 
 				for(var i = lowestRandomPoint; i <= highestRandomPoint; i++) {
 					selectedGenesFromParent2.push(par2.genome[i]);
@@ -43,17 +73,10 @@ var tools = {
 
 			var random = Math.random();
 			if(random < mutateRate) {
-				// var p1 = Math.floor(Math.random() * ((genomeLength - 1) - 1 ) + 1),
-				// 	p2 = Math.floor(Math.random() * ((genomeLength - 1) - 1) + 1);
 
-				// //swap
-				// var a = newChildGenome[p1];
-				// newChildGenome[p1] = newChildGenome[p2];
-				// newChildGenome[p2] = a;
-			
 				var k = Math.floor(Math.random() * (genomeLength - 1)),
 				 	i = Math.floor(Math.random() * (genomeLength - 1));
-				
+			
 				while(i == k) {
 					i = Math.floor(Math.random() * (genomeLength - 1));
 				}
@@ -62,8 +85,8 @@ var tools = {
 					highestRandomPoint = lowestRandomPoint == k ? i : k,
 				 
 				newChildGenome = tools.crossover.twoOptSwapGenome(newChildGenome, lowestRandomPoint, highestRandomPoint);
+				
 			}
-
 
 			return newChildGenome;
 		},
@@ -76,7 +99,7 @@ var tools = {
 		       return new_route;
 		   }
 
-		   i and k are arbitary
+		   i and k are random
 		*/
 		twoOptSwapGenome: function(genome, k, j) {
 			var new_route = [];
@@ -100,7 +123,7 @@ var tools = {
 
 	selection: {
 
-		tournament: function(individuals, mutateRate, twoOptMutation) {
+		tournament: function(individuals, mutateRate) {
 			var newGeneration = [];
 
 			for(var i = 0; i < individuals.length; i++) {
@@ -115,7 +138,7 @@ var tools = {
 
 				var child = new Individual();
 
-				child.genome = tools.crossover.twoPointCrossver(par1, par2, mutateRate, twoOptMutation);
+				child.genome = tools.crossover.twoPointCrossver(par1, par2, mutateRate);
 				child.fitnessScore = tools.fitnessTest(child);
 
 				newGeneration.push(child);
@@ -133,7 +156,7 @@ var tools = {
 				selectedIndivs.push(individuals[Math.floor(Math.random() * (individuals.length))]);
 			}
 
-			//find the fittest individual from the selected indivs
+			//find the fittest individual from the selected individuals
 			var fittest = selectedIndivs[0];
 			for(var i = 1; i < selectedIndivs.length; i++) {
 				if(selectedIndivs[i].fitnessScore > fittest.fitnessScore) {
@@ -143,46 +166,91 @@ var tools = {
 
 			return fittest;
 		},
-	},
 
-	/*
-		Calculates distance travled and automatically adds the starting point
-		in the calculation. (Starts and reconnects to this point)
-	*/
-	fitnessTest: function(indiv) {
-		var totalDistance = 0;
-		var genomeLength = indiv.genome.length - 1;
+		/*
+			Try roulette function without sorting the array
+		*/
+		roulette: function(individuals, mutateRate) {
+			var newGeneration = [];
 
-		totalDistance += tools.distanceToStartingPoint(indiv, 0);
+			var sumOfFitnesses = (function(individuals) {
+				var sum = 0,
+				individualsLength = individuals.length;
+				
+				for(var individualIndex = 0; individualIndex < individualsLength; individualIndex++)
+					sum += individuals[individualIndex].fitnessScore;
 
-		//calculate distance
-		for(var i = 1; i < genomeLength; i++) {
+				return sum;
 
-			//distance formula
-			var deltaX,
-				deltaY;
+			})(individuals);
 
-		
-			try{
-				deltaX  = Math.pow(indiv.genome[i].x - indiv.genome[i - 1].x, 2);
-				deltaY = Math.pow(indiv.genome[i].y - indiv.genome[i - 1].y, 2);
-			} catch(e) {
-				console.log(indiv);
+
+			for(var individualIndex = 0; individualIndex < individuals.length; individualIndex++)
+				individuals[individualIndex].probability = individuals[individualIndex].fitnessScore / sumOfFitnesses;
+			
+			// individuals.sort(function(a, b) {
+			// 	return a.fitnessScore - b.fitnessScore;
+			// });
+
+			for(var individualIndex = 0; individualIndex < individuals.length; individualIndex++) {
+
+				var parents = [];
+
+				for(var parentIndex = 0; parentIndex < 2; parentIndex++) {
+					parents.push(tools.selection.getInidividualRoulette(individuals));
+				}
+
+				var child = new Individual();
+				child.genome = tools.crossover.twoPointCrossver(parents[0], parents[1], mutateRate);
+				child.fitnessScore = tools.fitnessTest(child);
+
+				newGeneration.push(child);
 			}
 
+			return newGeneration;
+
+		},
+
+		getInidividualRoulette: function(individuals) {
+			var offset = 0;
+			var randomNumber = Math.random();
+			for(var individualIndex = 0; individualIndex < individuals.length; individualIndex++) {
+				offset += individuals[individualIndex].probability;
+				if(randomNumber < offset) {
+					return individuals[individualIndex];
+				}
+			}
+		}
+	},
+
+	fitnessTest: function(individual) {
+		var totalDistance = 0,
+		genomeLength = individual.genome.length - 1;
+
+		//start distance from starting point
+		totalDistance += tools.distanceToStartingPoint(individual, 0);
+
+		for(var pointInRoute = 1; pointInRoute < genomeLength; pointInRoute++) {
+
+			//distance formula
+			var deltaX  = Math.pow(individual.genome[pointInRoute].x - individual.genome[pointInRoute - 1].x, 2),
+				deltaY = Math.pow(individual.genome[pointInRoute].y - individual.genome[pointInRoute - 1].y, 2);
+			
 			totalDistance += (Math.sqrt(deltaX + deltaY));
+
 		}
 
-		totalDistance += tools.distanceToStartingPoint(indiv, genomeLength);
-		//larger distance gives off a smaller number1
+		//connect last point to starting point
+		totalDistance += tools.distanceToStartingPoint(individual, genomeLength);
+
 		return 1 / totalDistance;
 	},
 
-	//absolute value?
+
 	distanceToStartingPoint: function(indiv, genomeIndex) {
 
-		var deltaX = Math.abs(Math.pow(TSP.startingPoint.x - indiv.genome[genomeIndex].x, 2));
-		var deltaY = Math.abs(Math.pow(TSP.startingPoint.y - indiv.genome[genomeIndex].y, 2));
+		var deltaX = Math.abs(Math.pow(TSP.startingPoint.x - indiv.genome[genomeIndex].x, 2)),
+			deltaY = Math.abs(Math.pow(TSP.startingPoint.y - indiv.genome[genomeIndex].y, 2));
 		
 		return (Math.sqrt(deltaX + deltaY));
 	},

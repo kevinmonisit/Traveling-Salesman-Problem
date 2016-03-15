@@ -1,25 +1,20 @@
 
 var TSP = {
-	//total population count of a generation
-	populationCount: 150, 
+	
+	populationCount: 100,
 
-	//array of all individuals in current generation
-	individuals: [],
-	lastFittestIndividual: null,
-
-	generation: 0,
-	mutateRate: 0.30,
+	mutateRate: 0.4,
 	crossoverRate: 0.8,
 
-	genePoolPopulation: 3,
-	possibleGenes: [],
-	genomeLength: 100,
+	individuals: [],
+	lastFittestIndividual: null,
+	
+	cityArray: null,
+	amountOfCities: 100,
 
-	twoOptMutation: true,
-	init: false,
+	generation: 0,
 
-	plotMapArray: null,
-
+	//the route starts and ends at this point
 	startingPoint: (function() {
 		var max = document.getElementById('canvas').width,
 			min = 0;
@@ -31,6 +26,95 @@ var TSP = {
 
 	})(),
 
+	createGeneration: function() {
+		console.log("GENERATION: " + TSP.generation++);
+
+		//check if its the first generation
+		if(TSP.individuals.length == 0) {
+			for(var individualIndex = 0; individualIndex < TSP.populationCount; individualIndex++) {	
+				TSP.individuals.push(new Individual());
+
+				//dereference cityArray to not cause problems using slice
+				var cityArray = TSP.cityArray.slice();
+				
+				TSP.individuals[individualIndex].genome = TSP.shuffle(cityArray);
+				TSP.individuals[individualIndex].genome = cityArray;
+
+				TSP.individuals[individualIndex].fitnessScore = tools.fitnessTest(TSP.individuals[individualIndex]);
+			}
+
+			return;
+		}
+
+		lastFittestIndividual = TSP.getFittestIndividualOfPopulation();
+
+		//TSP.individuals = tools.selection.tournament(TSP.individuals, TSP.mutateRate);
+			
+		//TSP.individuals = tools.selection.roulette(TSP.individuals, TSP.mutateRate);
+
+		TSP.individuals.push(lastFittestIndividual);
+
+		console.log(TSP.getAverageFitnessOfPopulation());
+	},
+
+	getAverageFitnessOfPopulation: function() {
+		var sumOfFitness = 0;
+
+		for(var individualIndex = 0; individualIndex < TSP.individuals.length; individualIndex++) {
+			sumOfFitness += TSP.individuals[individualIndex].fitnessScore;
+		}
+
+		return sumOfFitness / TSP.individuals.length;
+	},
+
+	getFittestIndividualOfPopulation: function() {
+		var fittest = TSP.individuals[0];
+		
+		for(var individualIndex = 1; individualIndex < TSP.individuals.length; individualIndex++) {
+			if(TSP.individuals[individualIndex].fitnessScore > fittest)
+				fittest = TSP.individuals[individualIndex];
+		}
+
+		return fittest;
+	},
+
+	resetIndividuals: function() {
+		console.log("Resetting individuals.");
+		TSP.individuals = [];
+	
+		TSP.createGeneration();
+	},
+
+	resetEverything: function() {
+		console.log("Resetting everything.");
+		//reset variables
+		TSP.individuals = [];
+		TSP.cityArray = [];
+
+		TSP.cityArray = (function(TSP) {
+
+			var newCityArray = [];
+
+			var maxRandomCoordinate = document.getElementById('canvas').width,
+			minimumRandomCordinate = 0;
+
+			for(var cityIndex = 0; cityIndex < TSP.amountOfCities; cityIndex++) {
+			
+				newCityArray.push({
+					x: Math.floor(Math.random() * (maxRandomCoordinate - minimumRandomCordinate + 1)) + minimumRandomCordinate,
+					y: Math.floor(Math.random() * (document.getElementById('canvas').height - minimumRandomCordinate + 1)) + minimumRandomCordinate
+				});
+			
+			}
+
+			return newCityArray;
+
+		})(TSP);
+
+		TSP.createGeneration();
+
+	},
+
 	//fisher yates
 	shuffle: function(array) {
 	    for (var i = array.length - 1; i > 0; i--) {
@@ -41,85 +125,6 @@ var TSP = {
 	    }
 
 	    return array;
-	},
-
-	createGeneration: function() {
-		TSP.generation++;
-
-		console.log("GENERATION: " + TSP.generation + " =============================");
-
-		//check if it's the first generation
-		if(TSP.individuals.length == 0) {
-			for(var i = 0; i < TSP.populationCount; i++) {
-				TSP.individuals.push(new Individual());
-
-				//dereference variable to not cause shuffle bug
-				var _genome = TSP.plotMapArray.slice();
-				
-				TSP.individuals[i].genome = TSP.shuffle(_genome);
-				TSP.individuals[i].genome = _genome;
-
-//				TSP.individuals[i].fitnessScore = tools.fitnessTest(TSP.individuals[i]);
-			}
-
-			return;
-		}
-
-		lastFittestIndividual = TSP.getFittestIndividualOfPopulation();
-		TSP.individuals = tools.selection.tournament(TSP.individuals, TSP.mutateRate, TSP.twoOptMutation);
-		//TSP.individuals.push(lastFittestIndividual);
-	
-		console.log(TSP.getAverageFitnessOfPopulation());
-	},
-
-	getAverageFitnessOfPopulation: function() {
-		var sum = 0;
-
-		for(var i = 0; i < TSP.individuals.length; i++) {
-			sum += TSP.individuals[i].fitnessScore;
-		}
-		return sum / TSP.individuals.length;
-	},
-
-	getFittestIndividualOfPopulation: function() {
-		var fittest = TSP.individuals[0];
-		for(var i = 1; i < TSP.individuals.length; i++) {
-			if(TSP.individuals[i].fitnessScore > fittest)
-				fittest = TSP.individuals[i];
-		}
-
-		return fittest;
-	},
-
-	resetGeneration: function() {
-		console.log("RESETING GENERATION!");
-		
-		TSP.plotMapArray = (function() {
-			var arrayOfPlots = [];
-			var max = document.getElementById('canvas').width,
-	 			min = 0,
-				numOfPlots = 100;
-
-			for(var i = 0; i < numOfPlots; i++) {
-				arrayOfPlots.push({
-					x: Math.floor(Math.random() * (max - min + 1)) + min,
-					y: Math.floor(Math.random() * (max - min + 1)) + min
-				});
-			}
-
-			return arrayOfPlots;
-
-		})();
-		TSP.individuals = [];
-		TSP.createGeneration();
-	},
-
-	toggleTwoOptMutation: function() {
-		if(this.twoOptMutation)
-			this.twoOptMutation = false;
-		else
-			this.twoOptMutation = true;
-
-		return this.twoOptMutation;
 	}
+
 }

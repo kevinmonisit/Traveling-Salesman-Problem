@@ -4,11 +4,11 @@
 */
 
 //init the cities
-TSP.plotMapArray = (function(TSP) {
+TSP.cityArray = (function(TSP) {
 	var arrayOfPlots = [];
 	var max = document.getElementById('canvas').width,
 		min = 0,
-		numOfPlots = this.TSP.genomeLength;
+		numOfPlots = this.TSP.amountOfCities;
 
 	for(var i = 0; i < numOfPlots; i++) {
 		arrayOfPlots.push({
@@ -21,6 +21,8 @@ TSP.plotMapArray = (function(TSP) {
 
 })(TSP);
 
+//cityArraySave = JSON.stringify(TSP.cityArray);
+
 TSP.createGeneration();
 
 var main = {
@@ -32,7 +34,7 @@ var main = {
 
 		var fittest = TSP.getFittestIndividualOfPopulation();
 
-		for(var i = 0; i < TSP.plotMapArray.length; i++) {
+		for(var i = 0; i < TSP.cityArray.length; i++) {
 	
 			//draw starting point
 			if(i == 0) {
@@ -40,14 +42,16 @@ var main = {
 
 				main.ctx.arc(TSP.startingPoint.x,TSP.startingPoint.y,10,0,2*Math.PI);		
 				main.ctx.fillStyle = '#EA4335';
+			
 				main.ctx.fill();
+			
 				main.ctx.lineWidth = 2;
 				main.ctx.stroke();
 			}
 			
 			main.ctx.beginPath();
 		
-			main.ctx.arc(TSP.plotMapArray[i].x,TSP.plotMapArray[i].y,9,0,2*Math.PI);
+			main.ctx.arc(TSP.cityArray[i].x,TSP.cityArray[i].y,9,0,2*Math.PI);
 			main.ctx.lineWidth = 1;
 			main.ctx.stroke();
 		}
@@ -57,7 +61,7 @@ var main = {
 		main.ctx.lineTo(fittest.genome[0].x, fittest.genome[0].y);
 		main.ctx.stroke();
 
-		for(var i = 1; i < TSP.plotMapArray.length; i++) {
+		for(var i = 1; i < TSP.cityArray.length; i++) {
 			main.ctx.beginPath();
 
 			main.ctx.moveTo(fittest.genome[i - 1].x, fittest.genome[i - 1].y);
@@ -87,3 +91,4 @@ var main = {
 };
 
 main.updateRender();
+TSP.createGeneration();

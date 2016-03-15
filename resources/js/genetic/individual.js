@@ -1,5 +1,4 @@
-
-function Individual(genomeLength) {	
+function Individual() {	
 	this.genome = [];
 	this.fitnessScore = 0;
 	//used for the roulette algorithm
