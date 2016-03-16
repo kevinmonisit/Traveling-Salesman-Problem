@@ -1,44 +1,10 @@
 
 var tools = {
 
-	crossover: {
+	crossover: {}
 
-		_twoPointCrossver: function(parent1, parent1, mutationRate, crossoverRate)  {
-			var newChildGenome = [];
-
+		twoPointCrossover: function(parent1, parent2, mutateRate, crossoverRate) {
 			var genomeLength = parent1.genome.length;
-
-			var randomPoint1 = Math.floor(Math.random() * (genomeLength)),
-				randomPoint2 = Math.floor(Math.random() * (genomeLength));
-
-			var lowestRandomPoint = randomPoint2 < randomPoint1 ? randomPoint2 : randomPoint1,
-				highestRandomPoint = randomPoint2 > randomPoint1 ? randomPoint2 : randomPoint1;
-
-			//get the genes in-between the two random points in second parent
-			var selectedGenesFromParent2 = [];
-
-			for(var geneIndex = lowestRandomPoint; geneIndex < highestRandomPoint; geneIndex++) 
-				selectedGenesFromParent2.push(parent2.genome[geneIndex]);
-			
-			//push genes from first parent that aren't in the selected genes of second parent
-			for(var geneIndex = 0; i < lowestRandomPoint; geneIndex++)  {
-				if(selectedGenesFromParent2.indexOf(parent1.genome[geneIndex]))
-					newChildGenome.push(parent1.genome[geneIndex]);
-			}
-
-			newChildGenome.concat(selectedGenesFromParent2);
-
-			//go through rest of first parent's genome and push genes that weren't selected in second parent
-			for(var geneIndex = lowestRandomPoint; geneIndex < parent1.genome.length; geneIndex++) {
-				if(selectedGenesFromParent2.indexOf(parent1.genome[geneIndex]))
-					newChildGenome.push(parent1.genome[geneIndex]);
-			}
-				
-		},
-
-
-		twoPointCrossover: function(par1, par2, mutateRate, crossoverRate) {
-			var genomeLength = par1.genome.length;
 
 			var newChildGenome = [];
 
@@ -46,40 +12,41 @@ var tools = {
 			if(crossoverProbability < crossoverRate) {
 
 				//get two random points in genome
-				var r1 = Math.floor(Math.random() * (genomeLength)),
-					r2 = Math.floor(Math.random() * (genomeLength));
+				var randomPoint1 = Math.floor(Math.random() * (genomeLength)),
+					randomPoint2 = Math.floor(Math.random() * (genomeLength));
 					
-				var lowestRandomPoint = r2 < r1 ? r2 : r1,
-					highestRandomPoint = lowestRandomPoint == r2 ? r1 : r2,
+				var lowestRandomPoint = randomPoint2 < randomPoint1 ? randomPoint2 : randomPoint1,
+					highestRandomPoint = lowestRandomPoint == randomPoint2 ? randomPoint1 : randomPoint2,
 					selectedGenesFromParent2 = [];
 
-				for(var i = lowestRandomPoint; i <= highestRandomPoint; i++) {
-					selectedGenesFromParent2.push(par2.genome[i]);
+				for(var geneIndex = lowestRandomPoint; geneIndex <= highestRandomPoint; geneIndex++) {
+					selectedGenesFromParent2.push(parent2.genome[geneIndex]);
 				}
 
-				for(var i = 0; i < lowestRandomPoint; i++) {
-					if(selectedGenesFromParent2.indexOf(par1.genome[i]) == -1)
-						newChildGenome.push(par1.genome[i]);
+				for(var geneIndex = 0; geneIndex < lowestRandomPoint; geneIndex++) {
+					if(selectedGenesFromParent2.indexOf(parent1.genome[geneIndex]) == -1)
+						newChildGenome.push(parent1.genome[geneIndex]);
 				}
 
 				newChildGenome = newChildGenome.concat(selectedGenesFromParent2);
 
-				for(var i = lowestRandomPoint; i < par1.genome.length ; i++) {
-					if(selectedGenesFromParent2.indexOf(par1.genome[i]) == -1)
-						newChildGenome.push(par1.genome[i]);
+				for(var geneIndex = lowestRandomPoint; geneIndex < parent1.genome.length ; geneIndex++) {
+					if(selectedGenesFromParent2.indexOf(parent1.genome[geneIndex]) == -1)
+						newChildGenome.push(parent1.genome[geneIndex]);
 				}
 
 			} else {
-				newChildGenome = par1.fitnessScore > par2.fitnessScore ? par1.genome : par2.genome;
+				newChildGenome = parent1.fitnessScore > parent2.fitnessScore ? parent1.genome : parent2.genome;
 			}
 
 			var random = Math.random();
-				if(random < mutateRate)
-					if(TSP.mutation.toLowerCase() == 'swap')
+
+			if(random < mutateRate) {
+				if(TSP.mutation.toLowerCase() == 'swap')
 						newChildGenome = tools.crossover.geneSwapMutate(newChildGenome);
-					else if(TSP.mutation.toLowerCase() == 'inverse')
+				else if(TSP.mutation.toLowerCase() == 'inverse')
 						newChildGenome = tools.crossover._twoOptSwapGenome(newChildGenome);
-			
+			}
 
 			return newChildGenome;
 		},
