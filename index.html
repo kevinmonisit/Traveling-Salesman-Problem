@@ -6,47 +6,55 @@
         <title>Genetic Algorithms</title>
         <style>
             #canvas-container {
-                width: 100%;
-                text-align: center;
+                width: 900px;
+                display:inline-block; 
             }
 
-            #canvas-container {
+            #container {
+                display:inline;
                 width:100%;
-                text-align: center;
-            }
+                height:650px;
+            } 
 
             #canvas {
                 display: inline;
             }
 
             #btn-container {
+                width:200px;
                 text-align: center;
+           
+                position:absolute;
+           
+                display:inline-block;            
             }
 
         </style>
     </header>
 
     <body>
-        <div id='canvas-container'>
-            <canvas id='canvas' width="900" height="650"></canvas>
-        </div>
-
-        <div id='btn-container'>
-            <div id='info'>
-                <span id='info-span'>Generation: <span id='generationCount'>0</span> <br>Avg. Fitness: <span id='avgFitness'>0</span></span>
+        <div id='container'>
+            <div id='canvas-container'>
+                <canvas id='canvas' width="900" height="650"></canvas>
             </div>
 
-            <br>
+            <div id='btn-container'>
+                <div id='info'>
+                    <span id='info-span'>Generation: <span id='generationCount'>0</span> <br>Avg. Fitness: <span id='avgFitness'>0</span></span>
+                </div>
 
-            <button id='btn-gen'>New Generation</button> <br>
-            <button id='btn-reset'>Reset Everything</button> <br>
-            <button id='btn-resetIndividuals'>Reset All Individuals</button> <br> <br>
+                <br>
 
-            Num. of Cities <input type='number' id='amountOfCities'></input> <br> <br>
+                <button id='btn-gen'>New Generation</button> <br>
+                <button id='btn-reset'>Reset Everything</button> <br>
+                <button id='btn-resetIndividuals'>Reset All Individuals</button> <br> <br>
 
-            <button id='btn-toggleSelection'>Tournament selection is toggled</button> <br>
-            <!-- <button id='btn-toggleCrossover'>Two-point crossover is toggled</button> <br> -->
-            <button id='btn-toggleMutation'>Inverse mutation is toggled</button> <br>
+                Num. of Cities <input type='number' id='amountOfCities'></input> <br> <br>
+
+                <button id='btn-toggleSelection'>Tournament selection is toggled</button> <br>
+                <!-- <button id='btn-toggleCrossover'>Two-point crossover is toggled</button> <br> -->
+                <button id='btn-toggleMutation'>Inverse mutation is toggled</button> <br>
+            </div>
         </div>
 
     	<script src='resources/js/genetic/individual.js'></script>

@@ -1,7 +1,7 @@
 
 var tools = {
 
-	crossover: {}
+	crossover: {
 
 		twoPointCrossover: function(parent1, parent2, mutateRate, crossoverRate) {
 			var genomeLength = parent1.genome.length;
