@@ -14,6 +14,11 @@ var TSP = {
 
 	generation: 0,
 
+	selection: "TOURNAMENT",
+	//unused
+	crossover: "two",
+	mutation: "INVERSE",
+
 	//the route starts and ends at this point
 	startingPoint: (function() {
 		var max = document.getElementById('canvas').width,
@@ -26,8 +31,14 @@ var TSP = {
 
 	})(),
 
+	generationCountElement: document.getElementById("generationCount"),
+	averageFitnessElement: document.getElementById("avgFitness"),
+
 	createGeneration: function() {
 		console.log("GENERATION: " + TSP.generation++);
+
+		TSP.generationCountElement.innerHTML = TSP.generation;
+		TSP.averageFitnessElement.innerHTML = TSP.getAverageFitnessOfPopulation();
 
 		//check if its the first generation
 		if(TSP.individuals.length == 0) {
@@ -48,9 +59,12 @@ var TSP = {
 
 		lastFittestIndividual = TSP.getFittestIndividualOfPopulation();
 
-		//TSP.individuals = tools.selection.tournament(TSP.individuals, TSP.mutateRate);
-			
-		//TSP.individuals = tools.selection.roulette(TSP.individuals, TSP.mutateRate);
+		if(TSP.selection.toLowerCase() == "roulette")
+			TSP.individuals = tools.selection.roulette(TSP.individuals, TSP.mutateRate);
+		else if(TSP.selection.toLowerCase() == "tournament") 
+			TSP.individuals = tools.selection.tournament(TSP.individuals, TSP.mutateRate);
+		else 
+			throw Error("I don't know how this happened. Selection string is messed up for selection.");
 
 		TSP.individuals.push(lastFittestIndividual);
 

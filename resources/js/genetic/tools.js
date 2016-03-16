@@ -6,6 +6,8 @@ var tools = {
 		_twoPointCrossver: function(parent1, parent1, mutationRate, crossoverRate)  {
 			var newChildGenome = [];
 
+			var genomeLength = parent1.genome.length;
+
 			var randomPoint1 = Math.floor(Math.random() * (genomeLength)),
 				randomPoint2 = Math.floor(Math.random() * (genomeLength));
 
@@ -35,7 +37,7 @@ var tools = {
 		},
 
 
-		twoPointCrossver: function(par1, par2, mutateRate, crossoverRate) {
+		twoPointCrossover: function(par1, par2, mutateRate, crossoverRate) {
 			var genomeLength = par1.genome.length;
 
 			var newChildGenome = [];
@@ -72,25 +74,43 @@ var tools = {
 			}
 
 			var random = Math.random();
-			if(random < mutateRate) {
-
-				var k = Math.floor(Math.random() * (genomeLength - 1)),
-				 	i = Math.floor(Math.random() * (genomeLength - 1));
+				if(random < mutateRate)
+					if(TSP.mutation.toLowerCase() == 'swap')
+						newChildGenome = tools.crossover.geneSwapMutate(newChildGenome);
+					else if(TSP.mutation.toLowerCase() == 'inverse')
+						newChildGenome = tools.crossover._twoOptSwapGenome(newChildGenome);
 			
-				while(i == k) {
-					i = Math.floor(Math.random() * (genomeLength - 1));
-				}
-
-				var lowestRandomPoint = k < i ? k : i,
-					highestRandomPoint = lowestRandomPoint == k ? i : k,
-				 
-				newChildGenome = tools.crossover.twoOptSwapGenome(newChildGenome, lowestRandomPoint, highestRandomPoint);
-				
-			}
 
 			return newChildGenome;
 		},
 
+		onePointCrossover: function(parent1, parent2, mutateRate) {
+			var newChildGenome = [],
+				genomeLength = parent1.genome.length,
+				randomPoint = Math.floor((Math.random() * (genomeLength)));
+
+			for(var genomeIndex = 0; genomeIndex < genomeLength; genomeIndex++) {
+				
+				if(genomeIndex <= randomPoint)
+					newChildGenome.push(parent1.genome[genomeIndex]);
+				else if(genomeIndex > randomPoint)
+					newChildGenome.push(parent2.genome[genomeIndex]);
+			}
+
+			console.log(newChildGenome.length);
+
+			var random = Math.random();
+
+			if(random < mutateRate) 
+				newChildGenome = tools.crossover._twoOptSwapGenome(newChildGenome);
+
+			var random = Math.random();
+				if(random < mutateRate)
+					newChildGenome = tools.crossover._twoOptSwapGenome(newChildGenome);
+			
+			return newChildGenome;
+		},
+		
 		/*
 		   2optSwap(route, i, k) {
 		       1. take route[1] to route[i-1] and add them in order to new_route
@@ -101,23 +121,46 @@ var tools = {
 
 		   i and k are random
 		*/
-		twoOptSwapGenome: function(genome, k, j) {
-			var new_route = [];
+		_twoOptSwapGenome: function(genome) {
+			var new_route = [],
+				genomeLength = TSP.amountOfCities;
+			
+			var k = Math.floor(Math.random() * (genomeLength - 1)),
+			 	i = Math.floor(Math.random() * (genomeLength - 1));
+			
+			while(i == k) {
+				i = Math.floor(Math.random() * (genomeLength - 1));
+			}
 
-			for(var i = 0; i <= k - 1; i ++) {
+			var lowestRandomPoint = k < i ? k : i,
+				highestRandomPoint = lowestRandomPoint == k ? i : k;
+
+			for(var i = 0; i <= lowestRandomPoint - 1; i ++) {
 				new_route.push(genome[i]);			
 			}
 
 			//reverse order
-			for(var i = j; i >= k; i--) {
+			for(var i = highestRandomPoint; i >= lowestRandomPoint; i--) {
 				new_route.push(genome[i]);
 			}
 			
-			for(var i = j + 1; i < genome.length; i++) {
+			for(var i = highestRandomPoint + 1; i < genome.length; i++) {
 				new_route.push(genome[i]);
 			}
 			
 			return new_route;
+		},
+
+		geneSwapMutate: function(genome) {
+			var randompoint1 = Math.floor(Math.random() * genome.length),
+				randompoint2 = Math.floor(Math.random() * genome.length),
+				newGenome = genome.concat();
+
+			var k = newGenome[randompoint1];
+			newGenome[randompoint1] = newGenome[randompoint2];
+			newGenome[randompoint2] = k;
+
+			return newGenome;
 		}
 	},
 
@@ -138,7 +181,13 @@ var tools = {
 
 				var child = new Individual();
 
-				child.genome = tools.crossover.twoPointCrossver(par1, par2, mutateRate);
+				if(TSP.crossover.toLowerCase() == "two")
+					child.genome = tools.crossover.twoPointCrossover(par1, par2, mutateRate);
+				else if(TSP.crossover.toLowerCase() == "one")
+					child.genome = tools.crossover.onePointCrossover(par1, par2, mutateRate);
+				else
+					throw Error("Crossover has a werid value.");
+
 				child.fitnessScore = tools.fitnessTest(child);
 
 				newGeneration.push(child);
@@ -201,7 +250,14 @@ var tools = {
 				}
 
 				var child = new Individual();
-				child.genome = tools.crossover.twoPointCrossver(parents[0], parents[1], mutateRate);
+				
+				if(TSP.crossover.toLowerCase() == "two")
+					child.genome = tools.crossover.twoPointCrossover(parents[0], parents[1], mutateRate);
+				else if(TSP.crossover.toLowerCase() == "one")
+					child.genome = tools.crossover.onePointCrossover(parents[0], parents[1], mutateRate);
+				else
+					throw Error("Crossover has a werid value.");
+
 				child.fitnessScore = tools.fitnessTest(child);
 
 				newGeneration.push(child);
@@ -221,6 +277,37 @@ var tools = {
 				}
 			}
 		}
+	},
+
+	toggles: {
+		//twoLowerCase() in case I'm an idiot
+
+		toggleCrossover: function(element) {
+			// if(TSP.crossover.toLowerCase() == 'two')
+			// 	TSP.crossover = 'one';
+			// else if(TSP.crossover.toLowerCase() == 'one')
+			// 	TSP.crossover = 'two';
+
+			element.innerHTML = TSP.crossover.toLowerCase().capitalizeFirstLetter() + "-point crossover is toggled";
+		},
+
+		toggleMutation: function(element) {
+			if(TSP.mutation.toLowerCase() == 'inverse')
+				TSP.mutation = "swap";
+			else if(TSP.mutation.toLowerCase() == 'swap')
+				TSP.mutation = 'inverse';
+			console.log(TSP.mutatation);
+			element.innerHTML = TSP.mutation.toLowerCase().capitalizeFirstLetter() + " mutation is toggled";
+		},
+
+		toggleSelection: function(element) {
+			if(TSP.selection.toLowerCase() == "roulette") 
+				TSP.selection = "TOURNAMENT";
+			else if(TSP.selection.toLowerCase() == "tournament")
+				TSP.selection = "ROULETTE";
+
+			element.innerHTML = TSP.selection.toLowerCase().capitalizeFirstLetter() + " selection is toggled";
+		},
 	},
 
 	fitnessTest: function(individual) {

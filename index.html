@@ -32,9 +32,19 @@
         </div>
 
         <div id='btn-container'>
+            <div id='info'>
+                <span id='info-span'>Generation: <span id='generationCount'>0</span> <br>Avg. Fitness: <span id='avgFitness'>0</span></span>
+            </div>
+
             <button id='btn-gen'>New Generation</button> <br>
-            <button id='btn-reset'>Reset Generation</button> <br>
-            <button id='btn-2opt'>Toggle 2-opt mutation</button> <br>
+            <button id='btn-reset'>Reset Everything</button> <br>
+            <button id='btn-resetIndividuals'>Reset All Individuals</button> <br> <br>
+
+            Num. of Cities <input type='number' id='amountOfCities'></input> <br> <br>
+
+            <button id='btn-toggleSelection'>Tournament selection is toggled</button> <br>
+            <!-- <button id='btn-toggleCrossover'>Two-point crossover is toggled</button> <br> -->
+            <button id='btn-toggleMutation'>Inverse mutation is toggled</button> <br>
         </div>
 
     	<script src='resources/js/genetic/individual.js'></script>
@@ -50,12 +60,17 @@
                 main.updateRender();    
             });
 
-            main.setButtonFunction('btn-2opt', function() {
-                if(TSP.toggleTwoOptMutation())
-                    this.innerHTML = 'Untoggle 2-opt mutation';
-                else
-                    this.innerHTML = 'Toggle 2-opt mutation';
+            main.setButtonFunction('btn-toggleSelection', function() {
+                tools.toggles.toggleSelection(this);
             });
+
+            main.setButtonFunction('btn-toggleMutation', function() {
+                tools.toggles.toggleMutation(this);
+            });
+
+            // main.setButtonFunction('btn-toggleCrossover', function() {
+            //     tools.toggles.toggleCrossover(this);
+            // });
 
             window.addEventListener('keypress', function(e) {
                 if(e.keyCode == 32) {
