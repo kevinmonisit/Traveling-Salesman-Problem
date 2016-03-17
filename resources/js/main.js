@@ -3,6 +3,22 @@
 	Kevin's Science Fair ---
 */
 
+var textFile = null,
+	cityData = null,
+	makeTextFile = function (text) {
+		var data = new Blob([text], {type: 'text/plain'});
+
+		// If we are replacing a previously generated file we need to
+		// manually revoke the object URL to avoid memory leaks.
+		if (textFile !== null) {
+		  window.URL.revokeObjectURL(textFile);
+		}
+
+		textFile = window.URL.createObjectURL(data);
+
+		return textFile;
+	};
+
 //init the cities
 TSP.cityArray = (function(TSP) {
 	var arrayOfPlots = [];
@@ -20,6 +36,8 @@ TSP.cityArray = (function(TSP) {
 	return arrayOfPlots;
 
 })(TSP);
+
+cityData = JSON.stringify(TSP.cityArray);
 
 //cityArraySave = JSON.stringify(TSP.cityArray);
 
@@ -94,5 +112,9 @@ String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+function _data(data) {
+	TSP.cityArray = JSON.parse(data);
+	TSP.resetIndividuals();
+}
+
 main.updateRender();
-TSP.createGeneration();

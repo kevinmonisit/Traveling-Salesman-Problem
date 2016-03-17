@@ -54,6 +54,7 @@
                 <button id='btn-toggleSelection'>Tournament selection is toggled</button> <br>
                 <!-- <button id='btn-toggleCrossover'>Two-point crossover is toggled</button> <br> -->
                 <button id='btn-toggleMutation'>Inverse mutation is toggled</button> <br>
+                <span id='textFile'></span>
             </div>
         </div>
 
@@ -76,6 +77,10 @@
 
             main.setButtonFunction('btn-toggleMutation', function() {
                 tools.toggles.toggleMutation(this);
+            });
+
+            main.setButtonFunction('btn-resetIndividuals', function() {
+                TSP.resetIndividuals();
             });
 
             // main.setButtonFunction('btn-toggleCrossover', function() {

@@ -69,6 +69,8 @@ var TSP = {
 		TSP.individuals.push(lastFittestIndividual);
 
 		console.log(TSP.getAverageFitnessOfPopulation());
+		if(TSP.generation > 0)
+			textFile += (TSP.getAverageFitnessOfPopulation()* Math.pow(10, 5) + "\n")
 	},
 
 	getAverageFitnessOfPopulation: function() {

@@ -1,0 +1,17 @@
+	populationCount: 100,
+
+	mutateRate: 0.4,
+	crossoverRate: 0.8,
+
+	individuals: [],
+	lastFittestIndividual: null,
+	
+	cityArray: null,
+	amountOfCities: 100,
+
+	generation: 0,
+
+	selection: "TOURNAMENT",
+	//unused
+	crossover: "two",
+	mutation: "INVERSE",

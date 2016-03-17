@@ -239,7 +239,7 @@ var tools = {
 			var randomNumber = Math.random();
 			for(var individualIndex = 0; individualIndex < individuals.length; individualIndex++) {
 				offset += individuals[individualIndex].probability;
-				if(randomNumber < offset) {
+				if(randomNumber <= offset) {
 					return individuals[individualIndex];
 				}
 			}
